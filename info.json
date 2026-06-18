@@ -1,0 +1,93 @@
+{
+  "design_system": {
+    "theme_description": "Retro-futuristic Japanese, blending traditional Ukiyo-e aesthetics with warm, optimistic Solarpunk and technical UI elements.",
+    "color_palette": {
+      "background_primary": {
+        "description": "Warm cream/off-white",
+        "approx_hex": "#F4EFE8",
+        "usage": "Main page background, content cards"
+      },
+      "background_secondary": {
+        "description": "Deep charcoal/soft black",
+        "approx_hex": "#0F1110",
+        "usage": "Agenda section background, dark mode sections, footer"
+      },
+      "accent_primary": {
+        "description": "Burnt orange/rust",
+        "approx_hex": "#C44B15",
+        "usage": "Manifesto background, primary call-to-action buttons, 'GET TICKETS' banner"
+      },
+      "accent_secondary": {
+        "description": "Muted mustard/gold",
+        "approx_hex": "#CC9933",
+        "usage": "Date highlights, speaker names, subtle text accents"
+      },
+      "text_dark": {
+        "description": "Soft black",
+        "approx_hex": "#1A1A1A",
+        "usage": "Primary reading text on light backgrounds"
+      },
+      "text_light": {
+        "description": "Cream",
+        "approx_hex": "#F4EFE8",
+        "usage": "Text on dark or orange backgrounds"
+      }
+    },
+    "typography": {
+      "primary_headings": {
+        "font_style": "Thin, geometric sans-serif",
+        "casing": "UPPERCASE",
+        "letter_spacing": "Wide (tracking-wide)",
+        "usage": "Main titles (e.g., 'NEO MIRAI AI DESIGN CONFERENCE', 'AGENDA', 'SPEAKERS')"
+      },
+      "editorial_text": {
+        "font_style": "Elegant, traditional serif",
+        "usage": "Subtitles, quotes, manifesto copy (e.g., 'Three days of ideas...', 'We believe the future is...')",
+        "weight": "Regular or slightly italicized in places"
+      },
+      "technical_ui_text": {
+        "font_style": "Monospace or technical sans-serif",
+        "casing": "UPPERCASE",
+        "font_size": "Small",
+        "usage": "Navigation menu, dates, micro-copy, ticket prices"
+      },
+      "accents": {
+        "font_style": "Vertical Japanese characters",
+        "usage": "Decorative typographic elements aligned with traditional Japanese layout styles"
+      }
+    },
+    "layout_and_structure": {
+      "grid_system": "Strict, editorial-style grid with visible architectural linework.",
+      "dividers": "1px solid lines (dark on light backgrounds, light on dark backgrounds) separating sections and creating a blueprint-like feel.",
+      "manifesto_section": "Distinctive square grid pattern overlaying the solid burnt-orange background.",
+      "alignment": "Mix of strict left-alignment for text blocks and dynamic, asymmetrical placement of images alongside text."
+    },
+    "ui_components": {
+      "buttons_primary": {
+        "shape": "Perfect circles or rectangular capsules",
+        "background": "Solid burnt orange or soft black",
+        "text": "Uppercase, tracked out",
+        "iconography": "Thin right-facing arrows embedded within circles"
+      },
+      "buttons_secondary": {
+        "shape": "Text-only with an adjacent circular icon",
+        "border": "1px solid line on the circular icon",
+        "usage": "e.g., 'VIEW FULL AGENDA'"
+      },
+      "navigation_bar": {
+        "style": "Minimalist, sticky top or absolute top",
+        "active_state": "Small black dot centered underneath the active menu item (e.g., under 'HOME')"
+      }
+    },
+    "imagery_and_art_direction": {
+      "style": "Painterly digital illustration, heavily textured to look like canvas or traditional printmaking.",
+      "motifs": [
+        "Giant, imposing geometric shapes (suns, spheres, black holes)",
+        "Traditional Japanese architecture (pagodas, sweeping roofs) integrated with futuristic spires and transport tubes",
+        "Tiny silhouetted human figures to establish massive scale",
+        "Bonsai trees and autumn foliage serving as framing elements"
+      ],
+      "color_grading": "Warm, sepia-toned, 'golden hour' lighting across all illustrations to maintain a cohesive, nostalgic-yet-futuristic atmosphere."
+    }
+  }
+}
