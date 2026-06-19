@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from 'react';
+import { use, useLayoutEffect, useState } from 'react';
 import { useProducts } from '@/lib/products';
 import { useI18n } from '@/lib/i18n';
 import { useCart } from '@/lib/cart';
@@ -24,7 +24,7 @@ export default function ProductDetailPage({ params }) {
   const { toggleWishlist, isLiked } = useWishlist();
   const liked = product ? isLiked(product.id) : false;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     let cancelled = false;
     const instant = getCachedProduct(handle);
 
