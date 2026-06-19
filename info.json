@@ -1,93 +1,84 @@
 {
-  "design_system": {
-    "theme_description": "Retro-futuristic Japanese, blending traditional Ukiyo-e aesthetics with warm, optimistic Solarpunk and technical UI elements.",
-    "color_palette": {
-      "background_primary": {
-        "description": "Warm cream/off-white",
-        "approx_hex": "#F4EFE8",
-        "usage": "Main page background, content cards"
-      },
-      "background_secondary": {
-        "description": "Deep charcoal/soft black",
-        "approx_hex": "#0F1110",
-        "usage": "Agenda section background, dark mode sections, footer"
-      },
-      "accent_primary": {
-        "description": "Burnt orange/rust",
-        "approx_hex": "#C44B15",
-        "usage": "Manifesto background, primary call-to-action buttons, 'GET TICKETS' banner"
-      },
-      "accent_secondary": {
-        "description": "Muted mustard/gold",
-        "approx_hex": "#CC9933",
-        "usage": "Date highlights, speaker names, subtle text accents"
-      },
-      "text_dark": {
-        "description": "Soft black",
-        "approx_hex": "#1A1A1A",
-        "usage": "Primary reading text on light backgrounds"
-      },
-      "text_light": {
-        "description": "Cream",
-        "approx_hex": "#F4EFE8",
-        "usage": "Text on dark or orange backgrounds"
-      }
-    },
-    "typography": {
-      "primary_headings": {
-        "font_style": "Thin, geometric sans-serif",
-        "casing": "UPPERCASE",
-        "letter_spacing": "Wide (tracking-wide)",
-        "usage": "Main titles (e.g., 'NEO MIRAI AI DESIGN CONFERENCE', 'AGENDA', 'SPEAKERS')"
-      },
-      "editorial_text": {
-        "font_style": "Elegant, traditional serif",
-        "usage": "Subtitles, quotes, manifesto copy (e.g., 'Three days of ideas...', 'We believe the future is...')",
-        "weight": "Regular or slightly italicized in places"
-      },
-      "technical_ui_text": {
-        "font_style": "Monospace or technical sans-serif",
-        "casing": "UPPERCASE",
-        "font_size": "Small",
-        "usage": "Navigation menu, dates, micro-copy, ticket prices"
-      },
-      "accents": {
-        "font_style": "Vertical Japanese characters",
-        "usage": "Decorative typographic elements aligned with traditional Japanese layout styles"
-      }
-    },
-    "layout_and_structure": {
-      "grid_system": "Strict, editorial-style grid with visible architectural linework.",
-      "dividers": "1px solid lines (dark on light backgrounds, light on dark backgrounds) separating sections and creating a blueprint-like feel.",
-      "manifesto_section": "Distinctive square grid pattern overlaying the solid burnt-orange background.",
-      "alignment": "Mix of strict left-alignment for text blocks and dynamic, asymmetrical placement of images alongside text."
-    },
-    "ui_components": {
-      "buttons_primary": {
-        "shape": "Perfect circles or rectangular capsules",
-        "background": "Solid burnt orange or soft black",
-        "text": "Uppercase, tracked out",
-        "iconography": "Thin right-facing arrows embedded within circles"
-      },
-      "buttons_secondary": {
-        "shape": "Text-only with an adjacent circular icon",
-        "border": "1px solid line on the circular icon",
-        "usage": "e.g., 'VIEW FULL AGENDA'"
-      },
-      "navigation_bar": {
-        "style": "Minimalist, sticky top or absolute top",
-        "active_state": "Small black dot centered underneath the active menu item (e.g., under 'HOME')"
-      }
-    },
-    "imagery_and_art_direction": {
-      "style": "Painterly digital illustration, heavily textured to look like canvas or traditional printmaking.",
-      "motifs": [
-        "Giant, imposing geometric shapes (suns, spheres, black holes)",
-        "Traditional Japanese architecture (pagodas, sweeping roofs) integrated with futuristic spires and transport tubes",
-        "Tiny silhouetted human figures to establish massive scale",
-        "Bonsai trees and autumn foliage serving as framing elements"
-      ],
-      "color_grading": "Warm, sepia-toned, 'golden hour' lighting across all illustrations to maintain a cohesive, nostalgic-yet-futuristic atmosphere."
-    }
-  }
+     "design_system": {
+          "theme_description": "Modern, minimalist, and clean e-commerce interface focusing on fashion and apparel. It utilizes high contrast, ample whitespace, and a grid-based layout to emphasize product photography and sales.",
+          "color_palette": {
+               "background_primary": {
+                    "description": "Pure white",
+                    "approx_hex": "#FFFFFF",
+                    "usage": "Main page background, product card backgrounds, top navigation bar"
+               },
+               "background_secondary": {
+                    "description": "Very light gray/off-white",
+                    "approx_hex": "#F7F8FA",
+                    "usage": "Product image container backgrounds, subtle section dividers"
+               },
+               "accent_primary": {
+                    "description": "Deep navy/charcoal black",
+                    "approx_hex": "#1A1C23",
+                    "usage": "Active filter buttons, prominent CTA buttons, footer background, primary typography"
+               },
+               "accent_secondary": {
+                    "description": "Vibrant rose red",
+                    "approx_hex": "#E63946",
+                    "usage": "Flash sale countdown badges, active heart/wishlist icons, discounted pricing"
+               },
+               "text_dark": {
+                    "description": "Dark charcoal",
+                    "approx_hex": "#2D2D2D",
+                    "usage": "Headings, product titles, standard body copy"
+               },
+               "text_subdued": {
+                    "description": "Medium light gray",
+                    "approx_hex": "#9E9E9E",
+                    "usage": "Original prices (strikethrough), secondary metrics like 'sold' count, inactive filter borders"
+               }
+          },
+          "typography": {
+               "primary_headings": {
+                    "font_style": "Modern, geometric sans-serif",
+                    "weight": "Bold to Extra Bold",
+                    "usage": "Hero section titles (e.g., 'Limited Time Offer!'), Section headers ('Flash Sale', 'Todays For You!')"
+               },
+               "product_text": {
+                    "font_style": "Clean sans-serif",
+                    "weight": "Regular for titles, Bold for current prices",
+                    "usage": "Product names, pricing information, store names"
+               },
+               "microcopy": {
+                    "font_style": "Sans-serif",
+                    "font_size": "Small",
+                    "weight": "Regular",
+                    "usage": "Top navigation links, ratings, sold quantities, placeholder text in search"
+               }
+          },
+          "layout_and_structure": {
+               "grid_system": "Standard modular grid typical for e-commerce, organizing products into flexible columns (4-5 columns per row in standard views).",
+               "spacing": "Generous padding and margins (whitespace) to create a breathable, uncluttered feel.",
+               "hero_section": "Split layout with bold typography and promotional text on the left, and floating, layered product imagery on the right.",
+               "categories_bar": "Horizontal row of circular icons with centered text below, acting as quick visual filters."
+          },
+          "ui_components": {
+               "product_cards": {
+                    "container": "White background with a very subtle, soft drop shadow on hover/active states.",
+                    "image_area": "Light gray background holding the product image, taking up the top 60-70% of the card.",
+                    "actions": "Circular floating heart icon in the top right corner of the image area.",
+                    "progress_bar": "Thin horizontal bar indicating sale claim progress at the bottom of flash sale cards."
+               },
+               "buttons_and_chips": {
+                    "pill_buttons": "Fully rounded edges (capsule shape) used for category filters (e.g., 'Best Seller', 'Keep Stylish'). Active states are solid dark navy; inactive states are white with a gray border.",
+                    "navigation_arrows": "Square or slightly rounded square buttons with simple directional arrow icons."
+               },
+               "search_bar": {
+                    "style": "Wide, full-width central element in the header.",
+                    "features": "Rounded corners, internal category dropdown on the left ('All Category'), and a search icon on the right."
+               },
+               "countdown_timer": {
+                    "style": "Distinctive circular red badges holding white text for hours, minutes, and seconds, separated by dark colons."
+               }
+          },
+          "imagery_and_art_direction": {
+               "product_photography": "Clean, isolated product shots on transparent or light gray backgrounds to maintain visual consistency. Minimal staging.",
+               "hero_imagery": "Dynamic arrangement of isolated clothing items (t-shirts, sneakers) floating in an isometric or layered composition to create depth without a heavy background."
+          }
+     }
 }

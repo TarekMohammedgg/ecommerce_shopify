@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Urbanist:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+@source "../app/**/*.{js,ts,jsx,tsx}";
+@source "../components/**/*.{js,ts,jsx,tsx}";
+
+@theme {
+  --color-brand-bg: #FFFFFF;
+  --color-brand-sec: #F7F8FA;
+  --color-brand-navy: #1A1C23;
+  --color-brand-red: #E63946;
+  --color-brand-dark: #2D2D2D;
+  --color-brand-gray: #9E9E9E;
+  --color-brand-border: #E5E7EB;
+  
+  --font-sans: 'Poppins', 'Urbanist', sans-serif;
+}
+
+:root {
+  --brand-bg: #FFFFFF;
+  --brand-sec: #F7F8FA;
+  --brand-navy: #1A1C23;
+  --brand-red: #E63946;
+  --brand-dark: #2D2D2D;
+  --brand-gray: #9E9E9E;
+  --brand-border: #E5E7EB;
+}
+
+body {
+  background-color: var(--brand-bg);
+  color: var(--brand-dark);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--brand-sec);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--brand-navy);
+}
+
+/* E-commerce grid adjustments */
+.product-card-shadow {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+}
+
+.product-card-shadow:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+/* Flash Sale progress claim bar */
+.progress-bar-bg {
+  background-color: #E5E7EB;
+}
+.progress-bar-fill {
+  background-color: var(--brand-red);
+}
+
+/* Image zoom effect on card hover */
+.img-zoom {
+  transition: transform 0.5s ease;
+}
+.product-card-shadow:hover .img-zoom {
+  transform: scale(1.04);
+}
+
+/* Arabic adjustments */
+[dir="rtl"] {
+  text-align: right;
+}
+
+/* Section transitions */
+.animate-slide-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
