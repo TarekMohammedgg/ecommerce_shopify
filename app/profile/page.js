@@ -30,8 +30,6 @@ import {
   Trash2
 } from 'lucide-react';
 import Link from 'next/link';
-import GoogleSignInButton from '@/components/GoogleSignInButton';
-import GoogleOneTapPrompt from '@/components/GoogleOneTapPrompt';
 
 function ProfileContent() {
   const { t, locale } = useI18n();
@@ -68,7 +66,6 @@ function ProfileContent() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [googleAuthLoading, setGoogleAuthLoading] = useState(false);
 
   // Redirect back after login when ?redirect= is present
   useEffect(() => {
@@ -159,29 +156,6 @@ function ProfileContent() {
     } finally {
       setAuthLoading(false);
     }
-  };
-
-  const handleGoogleAuthSuccess = async ({ accessToken }) => {
-    setGoogleAuthLoading(true);
-    setError(null);
-    setSuccess(null);
-    try {
-      const data = await loginWithToken(accessToken);
-      if (data) {
-        setSuccess(locale === 'en' ? "Signed in with Google successfully." : "تم تسجيل الدخول باستخدام جوجل بنجاح.");
-      } else {
-        setError(locale === 'en' ? "Google authentication failed. Please try standard sign in." : "فشل تسجيل الدخول باستخدام جوجل. يرجى محاولة تسجيل الدخول العادي.");
-      }
-    } catch (err) {
-      console.error("Google Auth Sync Error:", err);
-      setError(locale === 'en' ? "Google Sign In encountered an error." : "واجه تسجيل الدخول باستخدام جوجل خطأً.");
-    } finally {
-      setGoogleAuthLoading(false);
-    }
-  };
-
-  const handleGoogleAuthError = (message) => {
-    setError(message || (locale === 'en' ? "Google Sign In was cancelled or failed." : "تم إلغاء تسجيل الدخول باستخدام جوجل أو فشل."));
   };
 
   // Handle Logout
@@ -611,12 +585,6 @@ function ProfileContent() {
           </div>
         )}
 
-        <GoogleOneTapPrompt
-          enabled={authTab === 'login' && !loadingCustomer && !googleAuthLoading}
-          onCredential={handleGoogleAuthSuccess}
-          onError={handleGoogleAuthError}
-        />
-
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <span className="text-xs font-bold text-brand-red tracking-widest uppercase block">
@@ -800,22 +768,6 @@ function ProfileContent() {
             </button>
           </form>
         )}
-
-        {/* Separator */}
-        <div className="flex items-center gap-4 text-xs text-brand-gray font-bold tracking-wider py-2 uppercase">
-          <div className="h-[1px] bg-brand-border flex-1" />
-          <span>OR</span>
-          <div className="h-[1px] bg-brand-border flex-1" />
-        </div>
-
-        {/* Social Auth Providers */}
-        <GoogleSignInButton
-          label={t('google_login')}
-          loading={googleAuthLoading}
-          disabled={authLoading}
-          onCredential={handleGoogleAuthSuccess}
-          onError={handleGoogleAuthError}
-        />
 
       </div>
     </div>

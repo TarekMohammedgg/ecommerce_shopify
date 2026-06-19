@@ -1,16 +1,13 @@
 "use client";
 
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import { I18nProvider } from '@/lib/i18n';
 import { AuthProvider } from '@/lib/auth';
 import { CartProvider } from '@/lib/cart';
 import { CheckoutProvider } from '@/lib/checkout';
 import { WishlistProvider } from '@/lib/wishlist';
 
-const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-
 export default function Providers({ children }) {
-  const tree = (
+  return (
     <I18nProvider>
       <AuthProvider>
         <CartProvider>
@@ -22,15 +19,5 @@ export default function Providers({ children }) {
         </CartProvider>
       </AuthProvider>
     </I18nProvider>
-  );
-
-  if (!googleClientId) {
-    return tree;
-  }
-
-  return (
-    <GoogleOAuthProvider clientId={googleClientId}>
-      {tree}
-    </GoogleOAuthProvider>
   );
 }
