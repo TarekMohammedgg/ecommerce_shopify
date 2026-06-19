@@ -73,9 +73,41 @@ body {
   transform: scale(1.04);
 }
 
-/* Arabic adjustments */
+/* Arabic / RTL */
 [dir="rtl"] {
-  text-align: right;
+  text-align: start;
+}
+
+[dir="rtl"] .font-urbanist,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3 {
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .tracking-widest,
+[dir="rtl"] .tracking-wider {
+  letter-spacing: 0.02em;
+}
+
+[dir="rtl"] .uppercase {
+  text-transform: none;
+}
+
+[dir="rtl"] .line-clamp-2 {
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card-shadow,
+  .product-card-shadow:hover,
+  .img-zoom,
+  .product-card-shadow:hover .img-zoom,
+  .animate-slide-up {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
 }
 
 /* Section transitions */

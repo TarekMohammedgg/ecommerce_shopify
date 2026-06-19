@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from 'react';
-import { getProduct } from '@/lib/shopify';
+import { useProducts } from '@/lib/products';
 import { useI18n } from '@/lib/i18n';
 import { useCart } from '@/lib/cart';
 import { ShoppingBag, ArrowLeft, Heart } from 'lucide-react';
@@ -13,32 +13,54 @@ export default function ProductDetailPage({ params }) {
   const { t, locale } = useI18n();
   const { addToCart } = useCart();
 
-  const [product, setProduct] = useState(null);
-  const [selectedImage, setSelectedImage] = useState("");
-  const [selectedSize, setSelectedSize] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
-  const [loading, setLoading] = useState(true);
+  const { getCachedProduct, ensureProduct } = useProducts();
+
+  const cachedProduct = getCachedProduct(handle);
+  const [product, setProduct] = useState(cachedProduct);
+  const [selectedImage, setSelectedImage] = useState(cachedProduct?.images?.[0] || "");
+  const [selectedSize, setSelectedSize] = useState(cachedProduct?.sizes?.[0] || "");
+  const [selectedColor, setSelectedColor] = useState(cachedProduct?.colors?.[0] || "");
+  const [loading, setLoading] = useState(!cachedProduct);
   const { toggleWishlist, isLiked } = useWishlist();
   const liked = product ? isLiked(product.id) : false;
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await getProduct(handle);
+    let cancelled = false;
+    const instant = getCachedProduct(handle);
+
+    if (instant) {
+      setProduct(instant);
+      setSelectedImage(instant.images[0] || "");
+      setSelectedSize(instant.sizes[0] || "");
+      setSelectedColor(instant.colors[0] || "");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    ensureProduct(handle)
+      .then((data) => {
+        if (cancelled) return;
         if (data) {
           setProduct(data);
           setSelectedImage(data.images[0] || "");
           setSelectedSize(data.sizes[0] || "");
           setSelectedColor(data.colors[0] || "");
+        } else {
+          setProduct(null);
         }
-      } catch (err) {
+      })
+      .catch((err) => {
         console.error("Failed fetching product details:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, [handle]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [handle, locale, getCachedProduct, ensureProduct]);
 
   const selectedVariant = product ? product.variants?.find(variant => {
     const sizeOpt = variant.selectedOptions.find(opt => opt.name === "SIZE" || opt.name === "المقاس");
@@ -54,7 +76,7 @@ export default function ProductDetailPage({ params }) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center bg-white text-brand-dark">
         <span className="font-inconsolata text-xs tracking-widest uppercase animate-pulse">
-          RETRIEVING SPECIFICATION...
+          {t('loading_specification')}
         </span>
       </div>
     );
@@ -104,7 +126,7 @@ export default function ProductDetailPage({ params }) {
                 className="w-full h-full object-cover filter sepia-[5%]"
               />
               {!product.available && (
-                <div className="absolute top-4 left-4 bg-brand-navy text-white font-bold text-xs tracking-widest px-3 py-1 uppercase rounded">
+                <div className="absolute top-4 start-4 bg-brand-navy text-white font-bold text-xs tracking-widest px-3 py-1 uppercase rounded">
                   {t('out_of_stock')}
                 </div>
               )}
@@ -136,16 +158,21 @@ export default function ProductDetailPage({ params }) {
           {/* Right Column: Specification details */}
           <div className="lg:col-span-5 space-y-8 p-6 md:p-8 border border-brand-border rounded-2xl bg-brand-sec">
             <div className="space-y-3">
-              <span className="text-xs font-bold text-brand-red uppercase tracking-widest block">
-                {product.category}
+              <span className={`text-xs font-bold text-brand-red block ${locale === 'ar' ? '' : 'uppercase tracking-widest'}`}>
+                {t(`filter_${product.category.toLowerCase().replace('-', '_')}`)}
               </span>
-              <h1 className="font-urbanist font-extrabold tracking-tight text-3xl text-brand-navy uppercase">
+              <h1
+                className={`font-urbanist font-extrabold tracking-tight text-2xl md:text-3xl text-brand-navy leading-snug ${
+                  locale === 'ar' ? '' : 'uppercase'
+                }`}
+                dir={locale === 'ar' ? 'rtl' : 'ltr'}
+              >
                 {product.title}
               </h1>
               
-              <div className="flex justify-between items-baseline pt-2">
-                <div className="text-xl font-extrabold tracking-wide text-brand-navy">
-                  {product.price} {t('currency')}
+              <div className="flex justify-between items-baseline pt-2 gap-4">
+                <div className="text-xl font-extrabold tracking-wide text-brand-navy tabular-nums">
+                  {product.price.toLocaleString(locale === 'ar' ? 'ar-EG' : 'en-US')} {t('currency')}
                 </div>
                 {selectedVariant && selectedVariant.weight > 0 && (
                   <div className="text-[11px] font-semibold tracking-wider text-brand-gray uppercase">
@@ -158,7 +185,10 @@ export default function ProductDetailPage({ params }) {
             <div className="border-b border-brand-border" />
 
             <div className="space-y-4">
-              <p className="text-xs md:text-sm leading-relaxed text-brand-dark/80 font-medium">
+              <p
+                className="text-sm leading-relaxed text-brand-dark/85 font-medium max-w-prose"
+                dir={locale === 'ar' ? 'rtl' : 'ltr'}
+              >
                 {product.description}
               </p>
             </div>
@@ -235,15 +265,17 @@ export default function ProductDetailPage({ params }) {
 
               <button
                 onClick={() => toggleWishlist(product)}
-                className={`w-full flex items-center justify-center gap-2.5 py-3.5 border text-xs font-bold uppercase tracking-widest rounded-full transition-all duration-300 ${
+                className={`w-full flex items-center justify-center gap-2.5 py-3.5 border text-xs font-bold rounded-full transition-all duration-300 ${
+                  locale === 'ar' ? '' : 'uppercase tracking-widest'
+                } ${
                   liked
                     ? 'bg-brand-red border-brand-red text-white shadow-sm'
                     : 'bg-white border-brand-border text-brand-dark hover:border-brand-red hover:text-brand-red'
                 }`}
-                aria-label="Toggle wishlist"
+                aria-label={liked ? t('remove_from_wishlist') : t('add_to_wishlist')}
               >
                 <Heart className={`w-4 h-4 transition-all duration-300 ${liked ? 'fill-white' : ''}`} />
-                <span>{liked ? t('remove_from_wishlist') ?? (locale === 'ar' ? 'إزالة من المفضلة' : 'Remove from Wishlist') : t('add_to_wishlist') ?? (locale === 'ar' ? 'أضف إلى المفضلة' : 'Add to Wishlist')}</span>
+                <span>{liked ? t('remove_from_wishlist') : t('add_to_wishlist')}</span>
               </button>
             </div>
 

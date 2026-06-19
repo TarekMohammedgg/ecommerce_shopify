@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useI18n } from '@/lib/i18n';
-import { getProducts } from '@/lib/shopify';
+import { useProducts } from '@/lib/products';
 import { useCart } from '@/lib/cart';
-import { Heart, ShoppingCart, SlidersHorizontal, ChevronDown, Check, X } from 'lucide-react';
-import Link from 'next/link';
+import { SlidersHorizontal, Check, X } from 'lucide-react';
 import { useWishlist } from '@/lib/wishlist';
+import ProductCard, { ProductCardSkeleton } from '@/components/ProductCard';
 
 const COLOR_HEX_MAP = {
   "BLACK": "#000000",
@@ -26,9 +26,7 @@ function ShopCatalog() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toggleWishlist, isLiked } = useWishlist();
-  
-  const [allProducts, setAllProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { products: allProducts, loading } = useProducts();
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [prevParamsString, setPrevParamsString] = useState(() => searchParams.toString());
 
@@ -41,21 +39,6 @@ function ShopCatalog() {
   const [sortBy, setSortBy] = useState('DEFAULT');
 
   const searchQuery = useMemo(() => searchParams.get('search') || '', [searchParams]);
-
-  // Load products initially
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await getProducts();
-        setAllProducts(data);
-      } catch (err) {
-        console.error("Failed fetching shop products:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, []);
 
   // Adjust filters state synchronously during render if search parameters change
   const currentParamsString = searchParams.toString();
@@ -404,10 +387,10 @@ function ShopCatalog() {
           {/* Right Column: Products Grid */}
           <main className="col-span-1 md:col-span-9">
             {loading ? (
-              <div className="h-96 flex items-center justify-center">
-                <span className="font-inconsolata text-xs tracking-widest uppercase animate-pulse">
-                  RETRIEVING BLUEPRINTS...
-                </span>
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} />
+                ))}
               </div>
             ) : filteredProducts.length === 0 ? (
               <div className="h-96 flex flex-col items-center justify-center text-center border border-dashed border-brand-border rounded-2xl bg-brand-sec p-8">
@@ -422,71 +405,18 @@ function ShopCatalog() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => {
-                  const liked = isLiked(product.id);
-                  return (
-                    <div 
-                      key={product.id}
-                      className="bg-white border border-brand-border rounded-xl overflow-hidden product-card-shadow flex flex-col justify-between"
-                    >
-                      <div className="flex-grow flex flex-col justify-between">
-                        {/* Top Gray Image Area */}
-                        <div className="relative w-full aspect-[4/5] bg-brand-sec overflow-hidden">
-                          <Link href={`/products/${product.handle}`} className="block w-full h-full">
-                            <img 
-                              src={product.images[0]} 
-                              alt={product.title}
-                              className="w-full h-full object-cover img-zoom filter sepia-[5%]"
-                            />
-                          </Link>
-                          
-                          {/* Floating Wishlist Heart */}
-                          <button 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              toggleWishlist(product);
-                            }}
-                            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center border border-brand-border shadow-sm hover:scale-105 transition-transform z-20"
-                            aria-label="Add to wishlist"
-                          >
-                            <Heart className={`w-4 h-4 ${liked ? 'text-brand-red fill-brand-red' : 'text-brand-gray'}`} />
-                          </button>
-                        </div>
-
-                        {/* Bottom Details */}
-                        <div className="p-4 flex-grow flex flex-col justify-between">
-                          <Link href={`/products/${product.handle}`} className="block space-y-2 group">
-                            <span className="text-[10px] text-brand-gray font-bold tracking-widest uppercase">
-                              {t(`filter_${product.category.toLowerCase().replace('-', '_')}`)}
-                            </span>
-                            <h3 className="font-sans font-medium text-xs md:text-sm text-brand-dark tracking-wider uppercase truncate group-hover:text-brand-red transition-colors">
-                              {product.title}
-                            </h3>
-                          </Link>
-                          <div className="flex justify-between items-center pt-2">
-                            <span className="text-xs md:text-sm font-bold text-brand-navy">
-                              {product.price} {t('currency')}
-                            </span>
-                            
-                            {/* Direct Quick Add button */}
-                            <button 
-                              onClick={(e) => {
-                                e.preventDefault();
-                                addToCart(product, 1, product.colors[0], product.sizes[0]);
-                              }}
-                              className="p-1.5 rounded-full bg-brand-sec border border-brand-border hover:bg-brand-navy hover:text-white transition-colors"
-                              aria-label="Add to cart"
-                            >
-                              <ShoppingCart className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard
+                    key={`${product.id}-${locale}`}
+                    product={product}
+                    locale={locale}
+                    t={t}
+                    liked={isLiked(product.id)}
+                    onToggleWishlist={toggleWishlist}
+                    onQuickAdd={(p) => addToCart(p, 1, p.colors[0], p.sizes[0])}
+                  />
+                ))}
               </div>
             )}
           </main>

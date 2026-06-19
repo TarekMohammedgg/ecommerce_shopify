@@ -5,11 +5,13 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useI18n } from '@/lib/i18n';
 import { useWishlist } from '@/lib/wishlist';
 import { useCart } from '@/lib/cart';
+import { applyProductLocale } from '@/lib/product-locale';
+import ProductCard from '@/components/ProductCard';
 import { useAuth } from '@/lib/auth';
 import { 
-  loginCustomer, 
-  registerCustomer
-} from '@/lib/shopify';
+  loginCustomerAccount,
+  registerCustomerAccount,
+} from '@/lib/customer-auth';
 import { 
   User, 
   Mail, 
@@ -86,21 +88,25 @@ function ProfileContent() {
 
     setAuthLoading(true);
     try {
-      const response = await loginCustomer(loginEmail, loginPassword);
-      if (response?.customerAccessToken?.accessToken) {
-        const newToken = response.customerAccessToken.accessToken;
-        const data = await loginWithToken(newToken);
-        if (data) {
+      const { ok, data } = await loginCustomerAccount({
+        email: loginEmail,
+        password: loginPassword,
+      });
+
+      if (ok && data?.accessToken) {
+        const profile = await loginWithToken(data.accessToken);
+        if (profile) {
           setSuccess(locale === 'en' ? "Successfully logged in." : "تم تسجيل الدخول بنجاح.");
         } else {
           setError(locale === 'en' ? "Failed to retrieve profile. Please sign in again." : "فشل في استرداد الملف الشخصي. يرجى تسجيل الدخول مرة أخرى.");
         }
+      } else if (data?.errors?.length) {
+        setError(data.errors.map((el) => el.message).join(", "));
       } else {
-        const errs = response?.customerUserErrors || [];
-        const errMsg = errs.length > 0 
-          ? errs.map(el => el.message).join(", ") 
-          : (locale === 'en' ? "Invalid email or password." : "البريد الإلكتروني أو كلمة المرور غير صحيحة.");
-        setError(errMsg);
+        setError(
+          data?.error ||
+          (locale === 'en' ? "Invalid email or password." : "البريد الإلكتروني أو كلمة المرور غير صحيحة.")
+        );
       }
     } catch (err) {
       setError(err.message || (locale === 'en' ? "An error occurred. Please try again." : "حدث خطأ ما. يرجى المحاولة مرة أخرى."));
@@ -121,35 +127,50 @@ function ProfileContent() {
 
     setAuthLoading(true);
     try {
-      const registerResponse = await registerCustomer(
-        registerEmail, 
-        registerPassword, 
-        registerFirstName, 
-        registerLastName
-      );
+      const { ok, data } = await registerCustomerAccount({
+        email: registerEmail,
+        password: registerPassword,
+        firstName: registerFirstName,
+        lastName: registerLastName,
+      });
 
-      if (registerResponse?.customer?.id) {
-        // Automatically log them in after registration
-        const loginResponse = await loginCustomer(registerEmail, registerPassword);
-        if (loginResponse?.customerAccessToken?.accessToken) {
-          const newToken = loginResponse.customerAccessToken.accessToken;
-          const data = await loginWithToken(newToken);
-          if (data) {
-            setSuccess(locale === 'en' ? "Account created successfully!" : "تم إنشاء الحساب بنجاح!");
-          } else {
-            setSuccess(locale === 'en' ? "Account created! Please sign in." : "تم إنشاء الحساب! يرجى تسجيل الدخول.");
-            setAuthTab('login');
-          }
+      if (ok && data?.accessToken) {
+        const profile = await loginWithToken(data.accessToken);
+        if (profile) {
+          setSuccess(locale === 'en' ? "Account created successfully!" : "تم إنشاء الحساب بنجاح!");
         } else {
           setSuccess(locale === 'en' ? "Account created! Please sign in." : "تم إنشاء الحساب! يرجى تسجيل الدخول.");
           setAuthTab('login');
+          setLoginEmail(registerEmail);
+        }
+      } else if (ok && data?.created) {
+        setSuccess(
+          locale === 'en'
+            ? "Account created! Please sign in."
+            : "تم إنشاء الحساب! يرجى تسجيل الدخول."
+        );
+        setAuthTab('login');
+        setLoginEmail(registerEmail);
+      } else if (data?.errors?.length) {
+        const taken = data.errors.some((err) => err.code === 'TAKEN');
+        if (taken) {
+          setError(
+            locale === 'en'
+              ? "This email is already registered. Please sign in instead."
+              : "هذا البريد الإلكتروني مسجّل بالفعل. يرجى تسجيل الدخول."
+          );
+          setAuthTab('login');
+          setLoginEmail(registerEmail);
+        } else {
+          setError(data.errors.map((err) => err.message).join(", "));
         }
       } else {
-        const errs = registerResponse?.customerUserErrors || [];
-        const errMsg = errs.length > 0 
-          ? errs.map(el => el.message).join(", ") 
-          : (locale === 'en' ? "Failed to create account. Email may be already registered." : "فشل إنشاء الحساب. قد يكون البريد الإلكتروني مسجلاً بالفعل.");
-        setError(errMsg);
+        setError(
+          data?.error ||
+          (locale === 'en'
+            ? "Failed to create account. Please try again."
+            : "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.")
+        );
       }
     } catch (err) {
       setError(err.message || (locale === 'en' ? "An error occurred. Please try again." : "حدث خطأ ما. يرجى المحاولة مرة أخرى."));
@@ -366,68 +387,19 @@ function ProfileContent() {
                     </Link>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                    {wishlistItems.map((product) => {
-                      const liked = isLiked(product.id);
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                    {wishlistItems.map((item) => {
+                      const product = applyProductLocale(item, locale);
                       return (
-                        <div 
-                          key={product.id}
-                          className="bg-white border border-brand-border rounded-xl overflow-hidden product-card-shadow flex flex-col justify-between"
-                        >
-                          <div className="flex-grow flex flex-col justify-between">
-                            {/* Top Gray Image Area */}
-                            <div className="relative w-full aspect-[4/5] bg-brand-sec overflow-hidden">
-                              <Link href={`/products/${product.handle}`} className="block w-full h-full">
-                                <img 
-                                  src={product.images[0]} 
-                                  alt={product.title}
-                                  className="w-full h-full object-cover img-zoom filter sepia-[5%]"
-                                />
-                              </Link>
-                              
-                              {/* Floating Wishlist Heart */}
-                              <button 
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  toggleWishlist(product);
-                                }}
-                                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center border border-brand-border shadow-sm hover:scale-105 transition-transform z-20"
-                                aria-label="Add to wishlist"
-                              >
-                                <Heart className={`w-4 h-4 ${liked ? 'text-brand-red fill-brand-red' : 'text-brand-gray'}`} />
-                              </button>
-                            </div>
-
-                            {/* Bottom Details */}
-                            <div className="p-4 flex-grow flex flex-col justify-between">
-                              <Link href={`/products/${product.handle}`} className="block space-y-2 group">
-                                <span className="text-[10px] text-brand-gray font-bold tracking-widest uppercase">
-                                  {product.category}
-                                </span>
-                                <h3 className="font-sans font-medium text-xs md:text-sm text-brand-dark tracking-wider uppercase truncate group-hover:text-brand-red transition-colors">
-                                  {product.title}
-                                </h3>
-                              </Link>
-                              <div className="flex justify-between items-center pt-2">
-                                <span className="text-xs md:text-sm font-bold text-brand-navy">
-                                  {product.price} {t('currency')}
-                                </span>
-                                
-                                <button 
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    addToCart(product, 1, product.colors?.[0] || 'DEFAULT', product.sizes?.[0] || 'M');
-                                  }}
-                                  className="p-1.5 rounded-full bg-brand-sec border border-brand-border hover:bg-brand-navy hover:text-white transition-colors"
-                                  aria-label="Add to cart"
-                                >
-                                  <ShoppingCart className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        <ProductCard
+                          key={`${product.id}-${locale}`}
+                          product={product}
+                          locale={locale}
+                          t={t}
+                          liked={isLiked(product.id)}
+                          onToggleWishlist={toggleWishlist}
+                          onQuickAdd={(p) => addToCart(p, 1, p.colors?.[0], p.sizes?.[0])}
+                        />
                       );
                     })}
                   </div>

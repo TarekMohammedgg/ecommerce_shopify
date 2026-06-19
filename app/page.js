@@ -3,16 +3,16 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useI18n } from '@/lib/i18n';
-import { getProducts } from '@/lib/shopify';
+import { useProducts } from '@/lib/products';
 import { useCart } from '@/lib/cart';
 import { useWishlist } from '@/lib/wishlist';
-import { ArrowRight, ArrowLeft, Heart, Shirt, Backpack, Footprints, Watch, Flame, ShoppingCart, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Shirt, Flame, Sparkles } from 'lucide-react';
+import ProductCard, { ProductCardSkeleton } from '@/components/ProductCard';
 
 export default function HomePage() {
   const { t, locale } = useI18n();
   const { addToCart } = useCart();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { products, loading } = useProducts();
   const [activeChip, setActiveChip] = useState("BEST_SELLER");
 
   // Countdown timer state
@@ -34,20 +34,6 @@ export default function HomePage() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await getProducts();
-        setProducts(data);
-      } catch (err) {
-        console.error("Failed loading products:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
   }, []);
 
   // Category list circles (aligned with CSV product types)
@@ -181,80 +167,32 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <div className="h-64 flex items-center justify-center">
-            <span className="font-inconsolata text-xs tracking-widest uppercase animate-pulse">
-              RETRIEVING BLUEPRINTS...
-            </span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {products.slice(0, 4).map((product, idx) => {
-              const liked = isLiked(product.id);
-              // Simulated discount prices
               const originalPrice = Math.round(product.price * 1.4);
               const progressPercentage = idx === 0 ? 90 : idx === 1 ? 70 : idx === 2 ? 50 : 20;
+              const soldLabel = idx === 0 ? t('sold_1') : idx === 1 ? t('sold_2') : idx === 2 ? t('sold_3') : t('sold_4');
 
               return (
-                <div 
-                  key={product.id}
-                  className="bg-white border border-brand-border rounded-xl overflow-hidden product-card-shadow flex flex-col justify-between"
-                >
-                  <div className="flex-grow flex flex-col">
-                    {/* Top Gray Image Area */}
-                    <div className="relative w-full aspect-[4/5] bg-brand-sec overflow-hidden">
-                      <Link href={`/products/${product.handle}`} className="block w-full h-full">
-                        <img 
-                          src={product.images[0]} 
-                          alt={product.title}
-                          className="w-full h-full object-cover img-zoom filter sepia-[5%]"
-                        />
-                      </Link>
-                      
-                      {/* Floating Wishlist Heart */}
-                      <button 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          toggleWishlist(product);
-                        }}
-                        className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center border border-brand-border shadow-sm hover:scale-105 transition-transform z-20"
-                        aria-label="Add to wishlist"
-                      >
-                        <Heart className={`w-4 h-4 ${liked ? 'text-brand-red fill-brand-red' : 'text-brand-gray'}`} />
-                      </button>
-                    </div>
-
-                    {/* Bottom Details */}
-                    <Link href={`/products/${product.handle}`} className="block p-4 space-y-3">
-                      <h3 className="font-sans font-medium text-xs md:text-sm text-brand-dark tracking-wider uppercase truncate">
-                        {product.title}
-                      </h3>
-
-                      {/* Pricing block */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs md:text-sm font-bold text-brand-red">
-                          {product.price} {t('currency')}
-                        </span>
-                        <span className="text-[10px] md:text-xs text-brand-gray line-through">
-                          {originalPrice} {t('currency')}
-                        </span>
-                      </div>
-                    </Link>
-                  </div>
-
-                  {/* Flash Sale Progress Claim Bar */}
-                  <div className="px-4 pb-4 space-y-1.5">
-                    <div className="w-full h-1.5 bg-brand-border rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-brand-red transition-all duration-500" 
-                        style={{ width: `${progressPercentage}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-[10px] text-brand-gray font-medium">
-                      <span>{idx === 0 ? t('sold_1') : idx === 1 ? t('sold_2') : idx === 2 ? t('sold_3') : t('sold_4')}</span>
-                    </div>
-                  </div>
-                </div>
+                <ProductCard
+                  key={`${product.id}-${locale}`}
+                  product={product}
+                  locale={locale}
+                  t={t}
+                  liked={isLiked(product.id)}
+                  onToggleWishlist={toggleWishlist}
+                  showCategory={false}
+                  compareAtPrice={originalPrice}
+                  priceVariant="sale"
+                  progressPercentage={progressPercentage}
+                  soldLabel={soldLabel}
+                />
               );
             })}
           </div>
@@ -290,77 +228,24 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <div className="h-64 flex items-center justify-center">
-            <span className="font-inconsolata text-xs tracking-widest uppercase animate-pulse">
-              RETRIEVING BLUEPRINTS...
-            </span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {filteredProductsForYou.slice(0, 8).map((product) => {
-              const liked = isLiked(product.id);
-              return (
-                <div 
-                  key={product.id}
-                  className="bg-white border border-brand-border rounded-xl overflow-hidden product-card-shadow flex flex-col justify-between"
-                >
-                  <div className="flex-grow flex flex-col justify-between">
-                    {/* Top Gray Image Area */}
-                    <div className="relative w-full aspect-[4/5] bg-brand-sec overflow-hidden">
-                      <Link href={`/products/${product.handle}`} className="block w-full h-full">
-                        <img 
-                          src={product.images[0]} 
-                          alt={product.title}
-                          className="w-full h-full object-cover img-zoom filter sepia-[5%]"
-                        />
-                      </Link>
-                      
-                      {/* Floating Wishlist Heart */}
-                      <button 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          toggleWishlist(product);
-                        }}
-                        className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white flex items-center justify-center border border-brand-border shadow-sm hover:scale-105 transition-transform z-20"
-                        aria-label="Add to wishlist"
-                      >
-                        <Heart className={`w-4 h-4 ${liked ? 'text-brand-red fill-brand-red' : 'text-brand-gray'}`} />
-                      </button>
-                    </div>
-
-                    {/* Bottom Details */}
-                    <div className="p-4 flex-grow flex flex-col justify-between">
-                      <Link href={`/products/${product.handle}`} className="block space-y-2 group">
-                        <span className="text-[10px] text-brand-gray font-bold tracking-widest uppercase">
-                          {product.category}
-                        </span>
-                        <h3 className="font-sans font-medium text-xs md:text-sm text-brand-dark tracking-wider uppercase truncate group-hover:text-brand-red transition-colors">
-                          {product.title}
-                        </h3>
-                      </Link>
-                      <div className="flex justify-between items-center pt-2">
-                        <span className="text-xs md:text-sm font-bold text-brand-navy">
-                          {product.price} {t('currency')}
-                        </span>
-                        
-                        {/* Direct Quick Add button */}
-                        <button 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            addToCart(product, 1, product.colors[0], product.sizes[0]);
-                          }}
-                          className="p-1.5 rounded-full bg-brand-sec border border-brand-border hover:bg-brand-navy hover:text-white transition-colors"
-                          aria-label="Add to cart"
-                        >
-                          <ShoppingCart className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {filteredProductsForYou.slice(0, 8).map((product) => (
+              <ProductCard
+                key={`${product.id}-${locale}`}
+                product={product}
+                locale={locale}
+                t={t}
+                liked={isLiked(product.id)}
+                onToggleWishlist={toggleWishlist}
+                onQuickAdd={(p) => addToCart(p, 1, p.colors[0], p.sizes[0])}
+              />
+            ))}
           </div>
         )}
       </section>
