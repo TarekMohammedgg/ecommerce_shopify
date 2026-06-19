@@ -7,6 +7,7 @@ import { useCart } from '@/lib/cart';
 import { useAuth } from '@/lib/auth';
 import { ShoppingBag, Globe, Search, User } from 'lucide-react';
 import { useState } from 'react';
+import BrandMark from '@/components/BrandMark';
 
 export default function Header() {
   const pathname = usePathname();
@@ -36,9 +37,7 @@ export default function Header() {
         
         {/* Brand Logo */}
         <Link href="/" className="flex flex-col flex-shrink-0">
-          <span className="font-urbanist tracking-[0.1em] font-extrabold text-2xl text-brand-navy select-none">
-            NeoMirai<span className="text-brand-red">.com</span>
-          </span>
+          <BrandMark className="font-urbanist tracking-[0.1em] font-extrabold text-2xl text-brand-navy select-none" />
         </Link>
 
         {/* Middle Wide Search Bar */}

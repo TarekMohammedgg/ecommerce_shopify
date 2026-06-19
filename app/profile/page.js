@@ -620,7 +620,7 @@ function ProfileContent() {
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <span className="text-xs font-bold text-brand-red tracking-widest uppercase block">
-            NEO MIRAI ID
+            {t('brand_id')}
           </span>
           <h1 className="font-urbanist font-extrabold text-3xl text-brand-navy uppercase tracking-wider">
             {authTab === 'login' ? t('login_tab') : t('register_tab')}

@@ -5,8 +5,8 @@ import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "NEO MIRAI | Headless E-commerce Storefront",
-  description: "Bilingual Solarpunk clothing brand using Shopify Storefront API as database.",
+  title: "نسيج | Naseej — Premium Fashion",
+  description: "نسيج — علامة أزياء عربية بخامات نقية وتصاميم عصرية. Naseej — bilingual premium clothing storefront.",
 };
 
 export default function RootLayout({ children }) {

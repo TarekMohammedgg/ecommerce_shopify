@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useI18n } from '@/lib/i18n';
+import BrandMark from '@/components/BrandMark';
+import { BRAND } from '@/lib/brand';
 
 export default function Footer() {
   const { t, locale } = useI18n();
@@ -12,9 +14,7 @@ export default function Footer() {
         
         {/* Logo and About */}
         <div className="space-y-4">
-          <span className="font-urbanist font-extrabold text-2xl tracking-wider select-none block">
-            NeoMirai<span className="text-brand-red">.com</span>
-          </span>
+          <BrandMark className="font-urbanist font-extrabold text-2xl tracking-wider select-none block" />
           <p className="text-xs text-brand-gray leading-relaxed max-w-sm">
             {locale === 'en' 
               ? "Redefining your everyday style with high-contrast, premium, and breathable clothing designs. Empowered by headless technology."
@@ -78,7 +78,7 @@ export default function Footer() {
           <p className="text-xs text-brand-gray leading-relaxed">
             HQ: Tokyo / Cairo
             <br />
-            Support: care@neomirai.com
+            Support: {BRAND.supportEmail}
             <br />
             Version: V2.6 Stable
           </p>
