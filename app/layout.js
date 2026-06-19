@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" dir="ltr" className="h-full scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="ar" dir="rtl" className="h-full scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className="bg-white text-brand-dark min-h-full flex flex-col antialiased overflow-x-hidden relative" suppressHydrationWarning>
         <Providers>
           {/* Sticky Header */}

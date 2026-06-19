@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useI18n } from '@/lib/i18n';
 import { useCart } from '@/lib/cart';
 import { useAuth } from '@/lib/auth';
-import { ShoppingBag, Globe, Search, ChevronDown, User } from 'lucide-react';
+import { ShoppingBag, Globe, Search, User } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Header() {
@@ -42,22 +42,15 @@ export default function Header() {
         </Link>
 
         {/* Middle Wide Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="flex-1 max-w-2xl hidden md:flex items-center border border-brand-border rounded-lg bg-brand-sec px-3 py-1.5 focus-within:border-brand-navy focus-within:ring-1 focus-within:ring-brand-navy transition-all">
-          {/* Category Dropdown */}
-          <div className="flex items-center gap-1 text-xs text-brand-dark font-medium border-r border-brand-border pr-3 mr-3 ltr:block rtl:hidden">
-            <span>{locale === 'en' ? "All Category" : "كل الفئات"}</span>
-            <ChevronDown className="w-3.5 h-3.5" />
-          </div>
+        <form onSubmit={handleSearchSubmit} className="flex-1 max-w-2xl hidden md:flex items-center gap-2 border border-brand-border rounded-lg bg-brand-sec px-3 py-1.5 focus-within:border-brand-navy focus-within:ring-1 focus-within:ring-brand-navy transition-all">
+          <Search className="w-4 h-4 text-brand-gray flex-shrink-0" aria-hidden="true" />
           <input
-            type="text"
+            type="search"
             placeholder={locale === 'en' ? "Search product or brand here..." : "ابحث عن المنتجات أو العلامات التجارية هنا..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-grow bg-transparent text-xs text-brand-dark placeholder-brand-gray focus:outline-none px-2"
+            className="flex-grow bg-transparent text-xs text-brand-dark placeholder-brand-gray focus:outline-none min-w-0 text-start rtl:text-end"
           />
-          <button type="submit" className="text-brand-gray hover:text-brand-navy transition-colors pl-2">
-            <Search className="w-4 h-4" />
-          </button>
         </form>
 
         {/* Action Buttons */}
