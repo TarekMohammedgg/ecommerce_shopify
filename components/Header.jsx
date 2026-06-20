@@ -9,6 +9,17 @@ import { ShoppingBag, Globe, Search, User } from 'lucide-react';
 import { useState } from 'react';
 import BrandMark from '@/components/BrandMark';
 
+const NAV_LINKS = [
+  { href: '/shop', labelKey: 'nav_shop', isActive: (pathname) => pathname === '/shop' },
+  { href: '/shop?category=T-SHIRTS', labelKey: 'filter_t_shirts' },
+  { href: '/shop?category=SHIRTS', labelKey: 'filter_shirts' },
+  { href: '/shop?category=HOODIES', labelKey: 'filter_hoodies' },
+  { href: '/shop?category=JACKETS', labelKey: 'filter_jackets' },
+  { href: '/shop?category=PANTS', labelKey: 'filter_pants' },
+  { href: '/shop?category=DRESSES', labelKey: 'filter_dresses' },
+  { href: '/#manifesto', labelKey: 'nav_about' },
+];
+
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
@@ -98,35 +109,39 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Navigation Submenu */}
-      <div className="max-w-7xl mx-auto px-6 border-t border-brand-border hidden md:flex items-center justify-between py-2.5 text-xs font-semibold text-brand-dark uppercase tracking-wider">
-        <div className="flex gap-8 overflow-x-auto">
-          <Link href="/shop" className={`hover:text-brand-red transition-colors flex-shrink-0 ${pathname === '/shop' ? 'text-brand-red' : ''}`}>
-            {t('nav_shop')}
-          </Link>
-          <Link href="/shop?category=T-SHIRTS" className="hover:text-brand-red transition-colors flex-shrink-0">
-            {t('filter_t_shirts')}
-          </Link>
-          <Link href="/shop?category=SHIRTS" className="hover:text-brand-red transition-colors flex-shrink-0">
-            {t('filter_shirts')}
-          </Link>
-          <Link href="/shop?category=HOODIES" className="hover:text-brand-red transition-colors flex-shrink-0">
-            {t('filter_hoodies')}
-          </Link>
-          <Link href="/shop?category=JACKETS" className="hover:text-brand-red transition-colors flex-shrink-0">
-            {t('filter_jackets')}
-          </Link>
-          <Link href="/shop?category=PANTS" className="hover:text-brand-red transition-colors flex-shrink-0">
-            {t('filter_pants')}
-          </Link>
-          <Link href="/shop?category=DRESSES" className="hover:text-brand-red transition-colors flex-shrink-0">
-            {t('filter_dresses')}
-          </Link>
-          <Link href="/#manifesto" className="hover:text-brand-red transition-colors flex-shrink-0">
-            {t('nav_about')}
-          </Link>
+      {/* Category nav — horizontal scroll on mobile, full row on desktop */}
+      <nav
+        aria-label={t('nav_shop')}
+        className="relative border-t border-brand-border"
+      >
+        <div
+          className="pointer-events-none absolute inset-y-0 start-0 z-10 w-8 bg-gradient-to-r from-white from-30% to-transparent md:hidden"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute inset-y-0 end-0 z-10 w-8 bg-gradient-to-l from-white from-30% to-transparent md:hidden"
+          aria-hidden="true"
+        />
+
+        <div className="max-w-7xl mx-auto overflow-x-auto scrollbar-none scroll-smooth px-4 md:px-6 [-webkit-overflow-scrolling:touch]">
+          <div className="flex w-max md:w-full items-center gap-1 md:gap-0 md:justify-between py-2 md:py-2.5 text-xs font-semibold text-brand-dark uppercase tracking-wider">
+            {NAV_LINKS.map(({ href, labelKey, isActive }) => {
+              const active = isActive?.(pathname);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`flex-shrink-0 rounded-full px-3 py-2 md:px-0 md:py-0 md:rounded-none transition-colors hover:text-brand-red active:bg-brand-sec md:active:bg-transparent ${
+                    active ? 'text-brand-red' : ''
+                  }`}
+                >
+                  {t(labelKey)}
+                </Link>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }
