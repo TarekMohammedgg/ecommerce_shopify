@@ -40,4 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# website request submissions (local dev)
+/data/website-requests.json
+
 .vercel

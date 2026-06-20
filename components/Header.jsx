@@ -10,6 +10,7 @@ import { useState } from 'react';
 import BrandMark from '@/components/BrandMark';
 
 const NAV_LINKS = [
+  { href: '/demo/fashion', labelKey: 'nav_home', isActive: (pathname) => pathname === '/demo/fashion' },
   { href: '/shop', labelKey: 'nav_shop', isActive: (pathname) => pathname === '/shop' },
   { href: '/shop?category=T-SHIRTS', labelKey: 'filter_t_shirts' },
   { href: '/shop?category=SHIRTS', labelKey: 'filter_shirts' },
@@ -17,7 +18,7 @@ const NAV_LINKS = [
   { href: '/shop?category=JACKETS', labelKey: 'filter_jackets' },
   { href: '/shop?category=PANTS', labelKey: 'filter_pants' },
   { href: '/shop?category=DRESSES', labelKey: 'filter_dresses' },
-  { href: '/#manifesto', labelKey: 'nav_about' },
+  { href: '/demo/fashion#manifesto', labelKey: 'nav_about' },
 ];
 
 export default function Header() {
@@ -47,7 +48,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3 sm:gap-6">
         
         {/* Brand Logo */}
-        <Link href="/" className="flex flex-col flex-shrink-0">
+        <Link href="/demo/fashion" className="flex flex-col flex-shrink-0">
           <BrandMark className="font-urbanist tracking-[0.1em] font-extrabold text-2xl text-brand-navy select-none" />
         </Link>
 

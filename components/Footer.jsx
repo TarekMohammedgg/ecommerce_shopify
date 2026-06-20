@@ -47,8 +47,13 @@ export default function Footer() {
           </h4>
           <ul className="space-y-2 text-xs text-brand-gray uppercase tracking-wider font-medium">
             <li>
-              <Link href="/#manifesto" className="hover:text-brand-red transition-colors">
+              <Link href="/demo/fashion#manifesto" className="hover:text-brand-red transition-colors">
                 {t('nav_about')}
+              </Link>
+            </li>
+            <li>
+              <Link href="/" className="hover:text-brand-red transition-colors">
+                {t('footer_studio_home')}
               </Link>
             </li>
             <li>
