@@ -33,7 +33,7 @@ export default function Header() {
       
 
       {/* Main Header Bar */}
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3 sm:gap-6">
         
         {/* Brand Logo */}
         <Link href="/" className="flex flex-col flex-shrink-0">
@@ -53,7 +53,7 @@ export default function Header() {
         </form>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-4 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
 
           {/* Language Toggle */}
           <button
@@ -66,13 +66,17 @@ export default function Header() {
           </button>
 
           {/* Profile Button */}
-          <Link href="/profile" className="hidden sm:block" aria-label="Account">
+          <Link
+            href="/profile"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-border bg-white text-brand-dark transition-all hover:border-brand-navy hover:text-brand-red hover:bg-brand-sec"
+            aria-label="Account"
+          >
             {isLoggedIn && customer ? (
-              <div className="w-8 h-8 rounded-full bg-brand-navy text-white flex items-center justify-center font-urbanist font-extrabold text-xs hover:ring-2 hover:ring-brand-red transition-all overflow-hidden">
+              <div className="w-8 h-8 rounded-full bg-brand-navy text-white flex items-center justify-center font-urbanist font-extrabold text-xs transition-all overflow-hidden">
                 {customer.firstName?.[0]?.toUpperCase() || <User className="w-4 h-4" />}
               </div>
             ) : (
-              <span className="text-brand-dark hover:text-brand-red transition-colors">
+              <span className="transition-colors">
                 <User className="w-5 h-5" />
               </span>
             )}
@@ -81,7 +85,7 @@ export default function Header() {
           {/* Cart Trigger */}
           <button
             onClick={() => setCartOpen(true)}
-            className="relative flex items-center gap-1 px-4 py-2 border border-brand-border rounded-full hover:border-brand-navy transition-all hover:bg-brand-sec"
+            className="relative flex h-11 min-w-11 items-center justify-center gap-1 rounded-full border border-brand-border px-3 sm:px-4 py-2 hover:border-brand-navy transition-all hover:bg-brand-sec"
             aria-label="Open cart"
           >
             <ShoppingBag className="w-4 h-4 text-brand-dark" />

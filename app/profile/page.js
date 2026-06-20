@@ -4,7 +4,6 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useI18n } from '@/lib/i18n';
 import { useWishlist } from '@/lib/wishlist';
-import { useCart } from '@/lib/cart';
 import { applyProductLocale } from '@/lib/product-locale';
 import ProductCard from '@/components/ProductCard';
 import { useAuth } from '@/lib/auth';
@@ -26,10 +25,7 @@ import {
   LogOut, 
   CheckCircle,
   AlertCircle,
-  ShoppingCart,
-  Plus,
-  Minus,
-  Trash2
+  ShoppingCart
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -38,20 +34,11 @@ function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { wishlistItems, toggleWishlist, isLiked } = useWishlist();
-  const { 
-    cartItems, 
-    cartCount, 
-    cartSubtotal, 
-    addToCart, 
-    removeFromCart, 
-    updateQuantity, 
-    triggerCheckout 
-  } = useCart();
   const { customer, isLoggedIn, loading: loadingCustomer, loginWithToken, logout } = useAuth();
 
   // Derived active sub-tab from search parameters
   const tabParam = searchParams.get('tab');
-  const activeSubTab = tabParam === 'wishlist' ? 'wishlist' : tabParam === 'cart' ? 'cart' : 'orders';
+  const activeSubTab = tabParam === 'wishlist' ? 'wishlist' : 'orders';
   const redirectPath = searchParams.get('redirect');
 
   // Authentication Forms State
@@ -265,16 +252,6 @@ function ProfileContent() {
                 >
                   {t('favourites_tab')} ({wishlistItems.length})
                 </button>
-                <button 
-                  onClick={() => router.replace('/profile?tab=cart', { scroll: false })}
-                  className={`pb-4 px-4 sm:px-6 text-xs font-extrabold uppercase tracking-widest transition-all relative whitespace-nowrap flex-shrink-0 ${
-                    activeSubTab === 'cart' 
-                      ? 'text-brand-navy border-b-2 border-brand-navy' 
-                      : 'text-brand-gray hover:text-brand-navy'
-                  }`}
-                >
-                  {t('cart_tab')} ({cartCount})
-                </button>
               </div>
             </div>
 
@@ -406,120 +383,6 @@ function ProfileContent() {
                 )
               )}
 
-              {activeSubTab === 'cart' && (
-                cartItems.length === 0 ? (
-                  <div className="py-16 text-center border border-dashed border-brand-border rounded-2xl bg-brand-sec space-y-4">
-                    <ShoppingCart className="w-8 h-8 text-brand-gray mx-auto opacity-60" />
-                    <p className="text-brand-gray text-xs font-medium uppercase tracking-wider">
-                      {t('no_cart_items')}
-                    </p>
-                    <Link 
-                      href="/shop" 
-                      className="inline-block px-6 py-2.5 bg-brand-navy hover:bg-brand-red text-white text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors"
-                    >
-                      {t('btn_shop_now')}
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="space-y-6">
-                    <div className="divide-y divide-brand-border border border-brand-border rounded-2xl overflow-hidden bg-white">
-                      {cartItems.map((item) => (
-                        <div 
-                          key={item.cartId}
-                          className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between"
-                        >
-                          <div className="flex items-start gap-4 min-w-0 flex-1">
-                            <Link 
-                              href={`/products/${item.handle}`}
-                              className="w-20 h-24 bg-brand-sec border border-brand-border rounded-lg overflow-hidden flex-shrink-0"
-                            >
-                              <img
-                                src={item.image}
-                                alt={item.title}
-                                className="w-full h-full object-cover filter sepia-[5%]"
-                              />
-                            </Link>
-                            <div className="min-w-0 flex-1 space-y-2">
-                              <div className="flex items-start justify-between gap-3">
-                                <Link 
-                                  href={`/products/${item.handle}`}
-                                  className="font-sans font-medium text-xs sm:text-sm text-brand-navy uppercase tracking-wider truncate hover:text-brand-red transition-colors"
-                                >
-                                  {item.title}
-                                </Link>
-                                <button 
-                                  onClick={() => removeFromCart(item.cartId)}
-                                  className="text-brand-gray hover:text-brand-red transition-colors flex-shrink-0"
-                                  aria-label={t('remove_item')}
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                              <div className="flex flex-wrap gap-3 text-[10px] text-brand-gray font-bold uppercase tracking-wider">
-                                {item.color && item.color !== 'DEFAULT' && (
-                                  <span>{t('color_label')}: {item.color}</span>
-                                )}
-                                {item.size && (
-                                  <span>{t('size_label')}: {item.size}</span>
-                                )}
-                              </div>
-                              <div className="flex items-center justify-between sm:justify-start sm:gap-6">
-                                <div className="flex items-center border border-brand-border rounded-full overflow-hidden bg-brand-sec">
-                                  <button
-                                    onClick={() => updateQuantity(item.cartId, item.quantity - 1)}
-                                    className="px-2.5 py-1 text-xs hover:bg-brand-border text-brand-dark transition-colors"
-                                    aria-label="Decrease quantity"
-                                  >
-                                    <Minus className="w-3 h-3" />
-                                  </button>
-                                  <span className="px-3 text-xs font-semibold text-brand-navy min-w-[2rem] text-center">
-                                    {item.quantity}
-                                  </span>
-                                  <button
-                                    onClick={() => updateQuantity(item.cartId, item.quantity + 1)}
-                                    className="px-2.5 py-1 text-xs hover:bg-brand-border text-brand-dark transition-colors"
-                                    aria-label="Increase quantity"
-                                  >
-                                    <Plus className="w-3 h-3" />
-                                  </button>
-                                </div>
-                                <span className="text-sm font-bold text-brand-navy sm:hidden">
-                                  {item.price * item.quantity} {t('currency')}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          <span className="hidden sm:block text-sm font-bold text-brand-red tracking-wider flex-shrink-0">
-                            {item.price * item.quantity} {t('currency')}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 bg-brand-sec border border-brand-border rounded-2xl">
-                      <div className="flex justify-between sm:justify-start sm:gap-3 items-baseline">
-                        <span className="text-xs font-bold text-brand-gray uppercase tracking-wider">
-                          {t('subtotal')}
-                        </span>
-                        <span className="text-lg font-extrabold text-brand-navy tracking-wide">
-                          {cartSubtotal} {t('currency')}
-                        </span>
-                      </div>
-                      <button
-                        onClick={triggerCheckout}
-                        className="flex items-center justify-center gap-2 px-8 py-3.5 bg-brand-navy hover:bg-brand-red text-white text-xs font-bold uppercase tracking-widest transition-all duration-300 group rounded-full shadow-md"
-                      >
-                        <span>{t('checkout')}</span>
-                        {locale === 'ar' ? (
-                          <ArrowLeft className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" />
-                        ) : (
-                          <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                )
-              )}
             </div>
           </div>
         </div>
