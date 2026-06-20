@@ -45,7 +45,7 @@ export default function Header() {
           <Search className="w-4 h-4 text-brand-gray flex-shrink-0" aria-hidden="true" />
           <input
             type="search"
-            placeholder={locale === 'en' ? "Search product or brand here..." : "ابحث عن المنتجات أو العلامات التجارية هنا..."}
+            placeholder={t('search_placeholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="flex-grow bg-transparent text-xs text-brand-dark placeholder-brand-gray focus:outline-none min-w-0 text-start rtl:text-end"
@@ -59,7 +59,7 @@ export default function Header() {
           <button
             onClick={toggleLanguage}
             className="hidden sm:flex items-center gap-1.5 text-[11px] font-medium text-brand-gray hover:text-brand-navy transition-colors border border-brand-border rounded-full px-3 py-1.5 hover:border-brand-navy hover:bg-brand-sec"
-            aria-label="Toggle language"
+            aria-label={t('toggle_language')}
           >
             <Globe className="w-3.5 h-3.5" />
             <span>{locale === 'en' ? 'EN' : 'AR'}</span>
@@ -69,7 +69,7 @@ export default function Header() {
           <Link
             href="/profile"
             className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-border bg-white text-brand-dark transition-all hover:border-brand-navy hover:text-brand-red hover:bg-brand-sec"
-            aria-label="Account"
+            aria-label={t('account_label')}
           >
             {isLoggedIn && customer ? (
               <div className="w-8 h-8 rounded-full bg-brand-navy text-white flex items-center justify-center font-urbanist font-extrabold text-xs transition-all overflow-hidden">
@@ -86,7 +86,7 @@ export default function Header() {
           <button
             onClick={() => setCartOpen(true)}
             className="relative flex h-11 min-w-11 items-center justify-center gap-1 rounded-full border border-brand-border px-3 sm:px-4 py-2 hover:border-brand-navy transition-all hover:bg-brand-sec"
-            aria-label="Open cart"
+            aria-label={t('open_cart')}
           >
             <ShoppingBag className="w-4 h-4 text-brand-dark" />
             {cartCount > 0 && (

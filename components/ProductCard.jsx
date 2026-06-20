@@ -71,7 +71,7 @@ export default function ProductCard({
               onToggleWishlist?.(product);
             }}
             className="absolute top-3 end-3 w-9 h-9 rounded-full bg-white/95 backdrop-blur-[2px] flex items-center justify-center border border-brand-border shadow-sm hover:scale-105 transition-transform z-20"
-            aria-label={liked ? 'Remove from wishlist' : 'Add to wishlist'}
+            aria-label={liked ? t('remove_from_wishlist') : t('add_to_wishlist')}
           >
             <Heart className={`w-4 h-4 ${liked ? 'text-brand-red fill-brand-red' : 'text-brand-gray'}`} />
           </button>

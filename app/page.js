@@ -38,20 +38,20 @@ export default function HomePage() {
 
   // Category list circles (aligned with CSV product types)
   const categories = [
-    { name: locale === 'en' ? "T-Shirts" : "تيشرتات", icon: <Shirt className="w-6 h-6 text-brand-dark" />, path: "/shop?category=T-SHIRTS" },
-    { name: locale === 'en' ? "Hoodies" : "هوديز", icon: <Flame className="w-6 h-6 text-brand-dark" />, path: "/shop?category=HOODIES" },
-    { name: locale === 'en' ? "Pants & Jeans" : "بناطيل وجينز", icon: <Shirt className="w-6 h-6 text-brand-dark rotate-180" />, path: "/shop?category=PANTS" },
-    { name: locale === 'en' ? "Shirts" : "قمصان", icon: <Shirt className="w-6 h-6 text-brand-dark opacity-60" />, path: "/shop?category=SHIRTS" },
-    { name: locale === 'en' ? "Jackets" : "جاكيتات", icon: <Flame className="w-6 h-6 text-brand-dark" />, path: "/shop?category=JACKETS" },
-    { name: locale === 'en' ? "Dresses" : "فساتين", icon: <Sparkles className="w-6 h-6 text-brand-dark" />, path: "/shop?category=DRESSES" },
+    { name: t('filter_t_shirts'), icon: <Shirt className="w-6 h-6 text-brand-dark" />, path: "/shop?category=T-SHIRTS" },
+    { name: t('filter_hoodies'), icon: <Flame className="w-6 h-6 text-brand-dark" />, path: "/shop?category=HOODIES" },
+    { name: t('filter_pants'), icon: <Shirt className="w-6 h-6 text-brand-dark rotate-180" />, path: "/shop?category=PANTS" },
+    { name: t('filter_shirts'), icon: <Shirt className="w-6 h-6 text-brand-dark opacity-60" />, path: "/shop?category=SHIRTS" },
+    { name: t('filter_jackets'), icon: <Flame className="w-6 h-6 text-brand-dark" />, path: "/shop?category=JACKETS" },
+    { name: t('filter_dresses'), icon: <Sparkles className="w-6 h-6 text-brand-dark" />, path: "/shop?category=DRESSES" },
   ];
 
   // Filters for "Todays For You!"
   const filterChips = [
-    { key: "BEST_SELLER", label: locale === 'en' ? "Best Seller" : "الأكثر مبيعاً" },
-    { key: "KEEP_STYLISH", label: locale === 'en' ? "Keep Stylish" : "أناقة مستمرة" },
-    { key: "SPECIAL_DISCOUNT", label: locale === 'en' ? "Special Discount" : "خصم خاص" },
-    { key: "OFFICIAL_STORE", label: locale === 'en' ? "Official Store" : "المتجر الرسمي" }
+    { key: "BEST_SELLER", label: t('best_seller') },
+    { key: "KEEP_STYLISH", label: t('keep_stylish') },
+    { key: "SPECIAL_DISCOUNT", label: t('special_discount') },
+    { key: "OFFICIAL_STORE", label: t('official_store') }
   ];
 
   const { toggleWishlist, isLiked } = useWishlist();

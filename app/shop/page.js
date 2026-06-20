@@ -182,7 +182,7 @@ function ShopCatalog() {
     }
     
     return result;
-  }, [allProducts, searchQuery, searchParams, selectedCategories, selectedColors, selectedSizes, priceMin, priceMax, sortBy]);
+  }, [allProducts, searchQuery, selectedCategories, selectedColors, selectedSizes, priceMin, priceMax, sortBy]);
 
   const { addToCart } = useCart();
 
@@ -224,7 +224,7 @@ function ShopCatalog() {
       {/* 2. Categories */}
       <div className="space-y-3">
         <span className="text-[10px] font-bold text-brand-navy tracking-widest uppercase block border-b border-brand-border pb-2">
-          {locale === 'en' ? "CATEGORIES" : "الفئات"}
+          {t('filter_categories')}
         </span>
         <div className="space-y-1.5">
           {['T-SHIRTS', 'SHIRTS', 'HOODIES', 'JACKETS', 'PANTS', 'DRESSES'].map((catKey) => {
@@ -265,7 +265,7 @@ function ShopCatalog() {
                     : 'border-brand-border hover:border-brand-navy'
                 }`}
                 title={colorName}
-                aria-label={`Filter by ${colorName}`}
+                aria-label={`${t('filter_by_color')} ${colorName}`}
               >
                 <span 
                   className="w-5.5 h-5.5 rounded-full block transition-transform duration-300 group-hover:scale-95" 
@@ -316,7 +316,7 @@ function ShopCatalog() {
         <div className="flex items-center gap-2">
           <input
             type="number"
-            placeholder={locale === 'en' ? "Min" : "أقل"}
+            placeholder={t('filter_min_price')}
             value={priceMin}
             onChange={(e) => setPriceMin(e.target.value)}
             onBlur={() => updateFilters({ categories: selectedCategories, colors: selectedColors, sizes: selectedSizes, priceMin, priceMax, sortBy })}
@@ -325,7 +325,7 @@ function ShopCatalog() {
           <span className="text-brand-gray text-xs">-</span>
           <input
             type="number"
-            placeholder={locale === 'en' ? "Max" : "أكثر"}
+            placeholder={t('filter_max_price')}
             value={priceMax}
             onChange={(e) => setPriceMax(e.target.value)}
             onBlur={() => updateFilters({ categories: selectedCategories, colors: selectedColors, sizes: selectedSizes, priceMin, priceMax, sortBy })}
@@ -354,7 +354,7 @@ function ShopCatalog() {
         <div className="border-b border-brand-border pb-6 mb-8 flex justify-between items-baseline flex-wrap gap-4">
           <div>
             <span className="text-[10px] text-brand-gray font-bold tracking-widest uppercase block mb-1">
-              [ {searchQuery ? `SEARCH: "${searchQuery}"` : "INVENTORY CATALOG"} ]
+              [ {searchQuery ? `${t('search_results_label')}: "${searchQuery}"` : t('inventory_catalog')} ]
             </span>
             <h1 className="font-urbanist font-extrabold tracking-tight text-3xl md:text-4xl text-brand-navy uppercase">
               {t('nav_shop')}
@@ -363,7 +363,7 @@ function ShopCatalog() {
           
           <div className="flex items-center gap-4">
             <span className="text-xs text-brand-gray font-medium font-mono uppercase">
-              {filteredProducts.length} {locale === 'en' ? "ITEMS CONFORMING" : "قطع مطابقة"}
+              {filteredProducts.length} {t('items_conforming')}
             </span>
             {/* Mobile Filter Button */}
             <button 
@@ -371,7 +371,7 @@ function ShopCatalog() {
               className="md:hidden flex items-center gap-2 px-4 py-2 border border-brand-border rounded-full text-xs font-bold text-brand-dark hover:border-brand-navy transition-colors bg-brand-sec"
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>{locale === 'en' ? "Filter" : "تصفية"}</span>
+              <span>{t('filter_button')}</span>
             </button>
           </div>
         </div>
@@ -395,7 +395,7 @@ function ShopCatalog() {
             ) : filteredProducts.length === 0 ? (
               <div className="h-96 flex flex-col items-center justify-center text-center border border-dashed border-brand-border rounded-2xl bg-brand-sec p-8">
                 <span className="text-xs text-brand-gray font-semibold uppercase tracking-widest">
-                  NO PIECES MATCH THIS FILTER OR SEARCH
+                  {t('no_matching_products')}
                 </span>
                 <button
                   onClick={clearAllFilters}
@@ -441,13 +441,13 @@ function ShopCatalog() {
                 <div className="flex items-center gap-2">
                   <SlidersHorizontal className="w-4 h-4 text-brand-navy" />
                   <h2 className="font-urbanist font-extrabold text-sm uppercase tracking-wider text-brand-navy">
-                    {locale === 'en' ? "Filters & Sort" : "التصفية والترتيب"}
+                    {t('sort_and_filters')}
                   </h2>
                 </div>
                 <button 
                   onClick={() => setIsMobileFilterOpen(false)}
                   className="p-1 rounded-full border border-brand-border hover:bg-brand-sec transition-colors text-brand-gray hover:text-brand-dark"
-                  aria-label="Close filters"
+                  aria-label={t('close_filters')}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -463,7 +463,7 @@ function ShopCatalog() {
                 onClick={() => setIsMobileFilterOpen(false)}
                 className="mt-8 w-full py-3.5 bg-brand-navy text-white text-xs font-bold uppercase tracking-widest rounded-full hover:bg-brand-red transition-colors shadow-md"
               >
-                {locale === 'en' ? "Apply Filters" : "تطبيق التصفية"}
+                {t('apply_filters')}
               </button>
             </div>
           </div>
@@ -474,15 +474,21 @@ function ShopCatalog() {
   );
 }
 
+function ShopPageFallback() {
+  const { t } = useI18n();
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white text-brand-dark">
+      <span className="font-inconsolata text-xs tracking-widest uppercase animate-pulse">
+        {t('initializing_shop')}
+      </span>
+    </div>
+  );
+}
+
 export default function ShopPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-white text-brand-dark">
-        <span className="font-inconsolata text-xs tracking-widest uppercase animate-pulse">
-          INITIALIZING SHOP INTERFACE...
-        </span>
-      </div>
-    }>
+    <Suspense fallback={<ShopPageFallback />}>
       <ShopCatalog />
     </Suspense>
   );

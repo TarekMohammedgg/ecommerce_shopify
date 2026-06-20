@@ -29,15 +29,22 @@ export default function ProductDetailPage({ params }) {
     const instant = getCachedProduct(handle);
 
     if (instant) {
-      setProduct(instant);
-      setSelectedImage(instant.images[0] || "");
-      setSelectedSize(instant.sizes[0] || "");
-      setSelectedColor(instant.colors[0] || "");
-      setLoading(false);
+      queueMicrotask(() => {
+        if (cancelled) return;
+        setProduct(instant);
+        setSelectedImage(instant.images[0] || "");
+        setSelectedSize(instant.sizes[0] || "");
+        setSelectedColor(instant.colors[0] || "");
+        setLoading(false);
+      });
       return;
     }
 
-    setLoading(true);
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setLoading(true);
+      }
+    });
     ensureProduct(handle)
       .then((data) => {
         if (cancelled) return;
@@ -86,13 +93,13 @@ export default function ProductDetailPage({ params }) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center text-center bg-white text-brand-dark space-y-6">
         <span className="font-inconsolata text-xs tracking-widest text-brand-gray uppercase">
-          SPECIFICATION CODE NOT FOUND
+          {t('product_not_found')}
         </span>
         <Link 
           href="/shop" 
           className="px-6 py-3 border border-brand-border text-xs font-bold uppercase tracking-widest hover:border-brand-navy hover:text-brand-navy transition-colors rounded-full"
         >
-          BACK TO CATALOG
+          {t('back_to_catalog')}
         </Link>
       </div>
     );
@@ -109,7 +116,7 @@ export default function ProductDetailPage({ params }) {
             className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase hover:text-brand-red transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5 rtl:rotate-180" />
-            <span>[ RETURN TO CATALOG ]</span>
+            <span>[ {t('return_to_catalog')} ]</span>
           </Link>
         </div>
 

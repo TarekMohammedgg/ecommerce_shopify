@@ -37,7 +37,7 @@ export default function CartDrawer() {
           <button 
             onClick={() => setCartOpen(false)}
             className="p-1 hover:text-brand-red transition-colors"
-            aria-label="Close cart"
+            aria-label={t('close_cart')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -76,7 +76,7 @@ export default function CartDrawer() {
                       <button 
                         onClick={() => removeFromCart(item.cartId)}
                         className="text-brand-gray hover:text-brand-red transition-colors animate-all"
-                        aria-label="Remove item"
+                        aria-label={t('remove_item')}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>

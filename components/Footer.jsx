@@ -6,26 +6,21 @@ import BrandMark from '@/components/BrandMark';
 import { BRAND } from '@/lib/brand';
 
 export default function Footer() {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
 
   return (
     <footer className="w-full bg-brand-navy text-white pt-16 pb-12 mt-12 border-t border-brand-border">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
-        
-        {/* Logo and About */}
         <div className="space-y-4">
           <BrandMark className="font-urbanist font-extrabold text-2xl tracking-wider select-none block" />
           <p className="text-xs text-brand-gray leading-relaxed max-w-sm">
-            {locale === 'en' 
-              ? "Redefining your everyday style with high-contrast, premium, and breathable clothing designs. Empowered by headless technology."
-              : "إعادة تعريف أسلوبك اليومي بتصاميم ملابس راقية، عالية التباين، ومريحة. مدعومة بتقنيات التصميم الحديثة."}
+            {t('footer_about')}
           </p>
         </div>
 
-        {/* Shop Category Links */}
         <div className="space-y-4">
           <h4 className="text-sm font-bold tracking-wider text-brand-sec uppercase">
-            {locale === 'en' ? "Shop Categories" : "أقسام المتجر"}
+            {t('footer_shop_categories')}
           </h4>
           <ul className="space-y-2 text-xs text-brand-gray uppercase tracking-wider font-medium">
             <li>
@@ -40,16 +35,15 @@ export default function Footer() {
             </li>
             <li>
               <Link href="/shop?category=OUTERWEAR" className="hover:text-brand-red transition-colors">
-                {t('filter_outerwear')}
+                {t('filter_jackets')}
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Company Links */}
         <div className="space-y-4">
           <h4 className="text-sm font-bold tracking-wider text-brand-sec uppercase">
-            {locale === 'en' ? "Information" : "معلومات"}
+            {t('footer_information')}
           </h4>
           <ul className="space-y-2 text-xs text-brand-gray uppercase tracking-wider font-medium">
             <li>
@@ -59,39 +53,36 @@ export default function Footer() {
             </li>
             <li>
               <a href="#" className="hover:text-brand-red transition-colors">
-                {locale === 'en' ? "Contact Us" : "اتصل بنا"}
+                {t('footer_contact')}
               </a>
             </li>
             <li>
               <a href="#" className="hover:text-brand-red transition-colors">
-                {locale === 'en' ? "Careers" : "الوظائف"}
+                {t('footer_careers')}
               </a>
             </li>
           </ul>
         </div>
 
-        {/* Payment & Location Info */}
         <div className="space-y-4">
           <h4 className="text-sm font-bold tracking-wider text-brand-sec uppercase">
-            {locale === 'en' ? "Locate Us" : "موقعنا"}
+            {t('footer_locate')}
           </h4>
           <p className="text-xs text-brand-gray leading-relaxed">
-            HQ: Tokyo / Cairo
+            {t('footer_hq')}: Tokyo / Cairo
             <br />
-            Support: {BRAND.supportEmail}
+            {t('footer_support')}: {BRAND.supportEmail}
             <br />
-            Version: V2.6 Stable
+            {t('footer_version')}: V2.6 Stable
           </p>
         </div>
-
       </div>
 
-      {/* Footer copyright */}
       <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-brand-gray/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-brand-gray">
         <span>{t('copyright')}</span>
         <div className="flex gap-6">
-          <a href="#" className="hover:text-brand-red transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-brand-red transition-colors">Terms of Service</a>
+          <a href="#" className="hover:text-brand-red transition-colors">{t('privacy_policy')}</a>
+          <a href="#" className="hover:text-brand-red transition-colors">{t('terms_of_service')}</a>
         </div>
       </div>
     </footer>

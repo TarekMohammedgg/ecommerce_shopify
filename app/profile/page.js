@@ -2,47 +2,45 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useI18n } from '@/lib/i18n';
 import { useWishlist } from '@/lib/wishlist';
+import { useCart } from '@/lib/cart';
 import { applyProductLocale } from '@/lib/product-locale';
 import ProductCard from '@/components/ProductCard';
 import { useAuth } from '@/lib/auth';
-import { 
+import {
   loginCustomerAccount,
   registerCustomerAccount,
 } from '@/lib/customer-auth';
-import { 
-  User, 
-  Mail, 
-  Lock, 
-  Heart, 
-  ShoppingBag, 
-  Eye, 
-  EyeOff, 
-  Loader2, 
-  ArrowRight, 
-  ArrowLeft, 
-  LogOut, 
+import {
+  User,
+  Mail,
+  Heart,
+  ShoppingBag,
+  Eye,
+  EyeOff,
+  Loader2,
+  ArrowRight,
+  LogOut,
   CheckCircle,
   AlertCircle,
-  ShoppingCart
+  ShoppingCart,
 } from 'lucide-react';
-import Link from 'next/link';
 
 function ProfileContent() {
   const { t, locale } = useI18n();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { wishlistItems, toggleWishlist, isLiked } = useWishlist();
+  const { addToCart } = useCart();
   const { customer, isLoggedIn, loading: loadingCustomer, loginWithToken, logout } = useAuth();
 
-  // Derived active sub-tab from search parameters
   const tabParam = searchParams.get('tab');
   const activeSubTab = tabParam === 'wishlist' ? 'wishlist' : 'orders';
   const redirectPath = searchParams.get('redirect');
 
-  // Authentication Forms State
-  const [authTab, setAuthTab] = useState('login'); // 'login' | 'register'
+  const [authTab, setAuthTab] = useState('login');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [registerEmail, setRegisterEmail] = useState('');
@@ -50,26 +48,24 @@ function ProfileContent() {
   const [registerFirstName, setRegisterFirstName] = useState('');
   const [registerLastName, setRegisterLastName] = useState('');
 
-  // UI States
   const [authLoading, setAuthLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Redirect back after login when ?redirect= is present
   useEffect(() => {
     if (!loadingCustomer && isLoggedIn && redirectPath) {
       router.replace(redirectPath);
     }
   }, [loadingCustomer, isLoggedIn, redirectPath, router]);
 
-  // Handle traditional Login
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+
     if (!loginEmail || !loginPassword) {
-      setError(locale === 'en' ? "Please fill in all fields." : "يرجى ملء جميع الحقول.");
+      setError(t('auth_fill_fields'));
       return;
     }
 
@@ -83,32 +79,29 @@ function ProfileContent() {
       if (ok && data?.accessToken) {
         const profile = await loginWithToken(data.accessToken);
         if (profile) {
-          setSuccess(locale === 'en' ? "Successfully logged in." : "تم تسجيل الدخول بنجاح.");
+          setSuccess(t('auth_login_success'));
         } else {
-          setError(locale === 'en' ? "Failed to retrieve profile. Please sign in again." : "فشل في استرداد الملف الشخصي. يرجى تسجيل الدخول مرة أخرى.");
+          setError(t('auth_profile_fetch_fail'));
         }
       } else if (data?.errors?.length) {
         setError(data.errors.map((el) => el.message).join(", "));
       } else {
-        setError(
-          data?.error ||
-          (locale === 'en' ? "Invalid email or password." : "البريد الإلكتروني أو كلمة المرور غير صحيحة.")
-        );
+        setError(data?.error || t('auth_invalid_credentials'));
       }
     } catch (err) {
-      setError(err.message || (locale === 'en' ? "An error occurred. Please try again." : "حدث خطأ ما. يرجى المحاولة مرة أخرى."));
+      setError(err.message || t('auth_generic_error'));
     } finally {
       setAuthLoading(false);
     }
   };
 
-  // Handle traditional Register
   const handleRegister = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+
     if (!registerEmail || !registerPassword || !registerFirstName || !registerLastName) {
-      setError(locale === 'en' ? "Please fill in all fields." : "يرجى ملء جميع الحقول.");
+      setError(t('auth_fill_fields'));
       return;
     }
 
@@ -124,55 +117,40 @@ function ProfileContent() {
       if (ok && data?.accessToken) {
         const profile = await loginWithToken(data.accessToken);
         if (profile) {
-          setSuccess(locale === 'en' ? "Account created successfully!" : "تم إنشاء الحساب بنجاح!");
+          setSuccess(t('auth_register_success'));
         } else {
-          setSuccess(locale === 'en' ? "Account created! Please sign in." : "تم إنشاء الحساب! يرجى تسجيل الدخول.");
+          setSuccess(t('auth_register_signin_prompt'));
           setAuthTab('login');
           setLoginEmail(registerEmail);
         }
       } else if (ok && data?.created) {
-        setSuccess(
-          locale === 'en'
-            ? "Account created! Please sign in."
-            : "تم إنشاء الحساب! يرجى تسجيل الدخول."
-        );
+        setSuccess(t('auth_register_signin_prompt'));
         setAuthTab('login');
         setLoginEmail(registerEmail);
       } else if (data?.errors?.length) {
-        const taken = data.errors.some((err) => err.code === 'TAKEN');
+        const taken = data.errors.some((errItem) => errItem.code === 'TAKEN');
         if (taken) {
-          setError(
-            locale === 'en'
-              ? "This email is already registered. Please sign in instead."
-              : "هذا البريد الإلكتروني مسجّل بالفعل. يرجى تسجيل الدخول."
-          );
+          setError(t('auth_email_taken'));
           setAuthTab('login');
           setLoginEmail(registerEmail);
         } else {
-          setError(data.errors.map((err) => err.message).join(", "));
+          setError(data.errors.map((errItem) => errItem.message).join(", "));
         }
       } else {
-        setError(
-          data?.error ||
-          (locale === 'en'
-            ? "Failed to create account. Please try again."
-            : "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.")
-        );
+        setError(data?.error || t('auth_register_fail'));
       }
     } catch (err) {
-      setError(err.message || (locale === 'en' ? "An error occurred. Please try again." : "حدث خطأ ما. يرجى المحاولة مرة أخرى."));
+      setError(err.message || t('auth_generic_error'));
     } finally {
       setAuthLoading(false);
     }
   };
 
-  // Handle Logout
   const handleLogout = async () => {
     await logout();
-    setSuccess(locale === 'en' ? "Successfully logged out." : "تم تسجيل الخروج بنجاح.");
+    setSuccess(t('auth_logout_success'));
   };
 
-  // Loading State
   if (loadingCustomer) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center bg-white text-brand-dark">
@@ -181,15 +159,12 @@ function ProfileContent() {
     );
   }
 
-  // Logged-in View
   if (isLoggedIn && customer) {
-    const formattedOrders = customer.orders?.edges?.map(edge => edge.node) || [];
+    const formattedOrders = customer.orders?.edges?.map((edge) => edge.node) || [];
 
     return (
       <div className="w-full bg-white py-12 animate-fade-in">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Left Side: Profile Information card */}
           <div className="lg:col-span-4 bg-brand-sec border border-brand-border rounded-2xl p-6 space-y-6">
             <div className="flex items-center gap-4 border-b border-brand-border pb-6">
               <div className="w-14 h-14 rounded-full bg-brand-navy text-white flex items-center justify-center font-urbanist font-extrabold text-xl">
@@ -212,13 +187,13 @@ function ProfileContent() {
               </div>
               {customer.phone && (
                 <div className="space-y-1">
-                  <span className="text-[10px] text-brand-gray font-normal">PHONE</span>
+                  <span className="text-[10px] text-brand-gray font-normal">{t('profile_phone')}</span>
                   <p className="text-brand-navy">{customer.phone}</p>
                 </div>
               )}
             </div>
 
-            <button 
+            <button
               onClick={handleLogout}
               className="w-full py-3 bg-white border border-brand-border hover:border-brand-red hover:text-brand-red text-brand-navy text-xs font-bold uppercase tracking-widest rounded-full transition-all duration-300 flex items-center justify-center gap-2"
             >
@@ -227,26 +202,24 @@ function ProfileContent() {
             </button>
           </div>
 
-          {/* Right Side: Tabbed content (Orders & Wishlist) */}
           <div className="lg:col-span-8 space-y-8">
-            {/* Tabs selector */}
             <div className="overflow-x-auto -mx-6 px-6 scrollbar-none">
               <div className="flex border-b border-brand-border min-w-max">
-                <button 
+                <button
                   onClick={() => router.replace('/profile?tab=orders', { scroll: false })}
                   className={`pb-4 px-4 sm:px-6 text-xs font-extrabold uppercase tracking-widest transition-all relative whitespace-nowrap flex-shrink-0 ${
-                    activeSubTab === 'orders' 
-                      ? 'text-brand-navy border-b-2 border-brand-navy' 
+                    activeSubTab === 'orders'
+                      ? 'text-brand-navy border-b-2 border-brand-navy'
                       : 'text-brand-gray hover:text-brand-navy'
                   }`}
                 >
                   {t('orders_tab')} ({formattedOrders.length})
                 </button>
-                <button 
+                <button
                   onClick={() => router.replace('/profile?tab=wishlist', { scroll: false })}
                   className={`pb-4 px-4 sm:px-6 text-xs font-extrabold uppercase tracking-widest transition-all relative whitespace-nowrap flex-shrink-0 ${
-                    activeSubTab === 'wishlist' 
-                      ? 'text-brand-navy border-b-2 border-brand-navy' 
+                    activeSubTab === 'wishlist'
+                      ? 'text-brand-navy border-b-2 border-brand-navy'
                       : 'text-brand-gray hover:text-brand-navy'
                   }`}
                 >
@@ -255,7 +228,6 @@ function ProfileContent() {
               </div>
             </div>
 
-            {/* Tab content panels */}
             <div className="w-full">
               {activeSubTab === 'orders' && (
                 formattedOrders.length === 0 ? (
@@ -264,8 +236,8 @@ function ProfileContent() {
                     <p className="text-brand-gray text-xs font-medium uppercase tracking-wider">
                       {t('no_orders')}
                     </p>
-                    <Link 
-                      href="/shop" 
+                    <Link
+                      href="/shop"
                       className="inline-block px-6 py-2.5 bg-brand-navy hover:bg-brand-red text-white text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors"
                     >
                       {t('btn_shop_now')}
@@ -275,16 +247,15 @@ function ProfileContent() {
                   <div className="space-y-6">
                     {formattedOrders.map((order) => {
                       const date = new Date(order.processedAt).toLocaleDateString(
-                        locale === 'ar' ? 'ar-EG' : 'en-US', 
+                        locale === 'ar' ? 'ar-EG' : 'en-US',
                         { year: 'numeric', month: 'long', day: 'numeric' }
                       );
 
                       return (
-                        <div 
-                          key={order.id} 
+                        <div
+                          key={order.id}
                           className="border border-brand-border rounded-2xl overflow-hidden bg-white shadow-sm"
                         >
-                          {/* Order Header */}
                           <div className="bg-brand-sec border-b border-brand-border p-4 flex flex-wrap justify-between items-center gap-4 text-xs font-bold uppercase tracking-wider text-brand-navy">
                             <div>
                               <span>{t('order_number')} #{order.orderNumber}</span>
@@ -312,7 +283,6 @@ function ProfileContent() {
                             </div>
                           </div>
 
-                          {/* Line items list */}
                           <div className="p-4 divide-y divide-brand-border">
                             {order.lineItems?.edges?.map((edge, idx) => {
                               const item = edge.node;
@@ -320,8 +290,8 @@ function ProfileContent() {
                                 <div key={idx} className="py-3 flex items-center gap-4 justify-between">
                                   <div className="flex items-center gap-4">
                                     <div className="w-12 h-15 bg-brand-sec border border-brand-border rounded overflow-hidden flex-shrink-0">
-                                      <img 
-                                        src={item.variant?.image?.url || "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=150&q=85"} 
+                                      <img
+                                        src={item.variant?.image?.url || "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=150&q=85"}
                                         alt={item.title}
                                         className="w-full h-full object-cover"
                                       />
@@ -331,7 +301,7 @@ function ProfileContent() {
                                         {item.title}
                                       </h4>
                                       <span className="text-[10px] text-brand-gray font-medium">
-                                        QTY: {item.quantity}
+                                        {t('profile_qty')}: {item.quantity}
                                       </span>
                                     </div>
                                   </div>
@@ -356,8 +326,8 @@ function ProfileContent() {
                     <p className="text-brand-gray text-xs font-medium uppercase tracking-wider">
                       {t('no_favourites')}
                     </p>
-                    <Link 
-                      href="/shop" 
+                    <Link
+                      href="/shop"
                       className="inline-block px-6 py-2.5 bg-brand-navy hover:bg-brand-red text-white text-[10px] font-bold uppercase tracking-widest rounded-full transition-colors"
                     >
                       {t('btn_shop_now')}
@@ -375,14 +345,13 @@ function ProfileContent() {
                           t={t}
                           liked={isLiked(product.id)}
                           onToggleWishlist={toggleWishlist}
-                          onQuickAdd={(p) => addToCart(p, 1, p.colors?.[0], p.sizes?.[0])}
+                          onQuickAdd={(productItem) => addToCart(productItem, 1, productItem.colors?.[0], productItem.sizes?.[0])}
                         />
                       );
                     })}
                   </div>
                 )
               )}
-
             </div>
           </div>
         </div>
@@ -390,23 +359,16 @@ function ProfileContent() {
     );
   }
 
-  // Guest / Login Form View
   return (
     <div className="w-full bg-white py-16 flex items-center justify-center animate-fade-in">
       <div className="w-full max-w-md px-6 space-y-8">
-        
         {redirectPath && (
           <div className="p-4 bg-brand-sec border border-brand-border text-brand-navy text-xs font-semibold rounded-xl flex items-center gap-3">
             <ShoppingCart className="w-4 h-4 flex-shrink-0" />
-            <span>
-              {locale === 'en'
-                ? "Sign in to add items to your cart."
-                : "سجّل الدخول لإضافة المنتجات إلى سلة التسوق."}
-            </span>
+            <span>{t('sign_in_to_add_cart')}</span>
           </div>
         )}
 
-        {/* Alerts / Info */}
         {error && (
           <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-xl flex items-center gap-3">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -420,7 +382,6 @@ function ProfileContent() {
           </div>
         )}
 
-        {/* Brand Header */}
         <div className="text-center space-y-2">
           <span className="text-xs font-bold text-brand-red tracking-widest uppercase block">
             {t('brand_id')}
@@ -430,23 +391,28 @@ function ProfileContent() {
           </h1>
         </div>
 
-        {/* Tabs to switch Login / Register */}
         <div className="flex border border-brand-border rounded-full p-1 bg-brand-sec">
           <button
-            onClick={() => { setAuthTab('login'); setError(null); }}
+            onClick={() => {
+              setAuthTab('login');
+              setError(null);
+            }}
             className={`flex-1 py-2 text-center text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 ${
-              authTab === 'login' 
-                ? 'bg-brand-navy text-white shadow-sm' 
+              authTab === 'login'
+                ? 'bg-brand-navy text-white shadow-sm'
                 : 'text-brand-gray hover:text-brand-navy'
             }`}
           >
             {t('login_tab')}
           </button>
           <button
-            onClick={() => { setAuthTab('register'); setError(null); }}
+            onClick={() => {
+              setAuthTab('register');
+              setError(null);
+            }}
             className={`flex-1 py-2 text-center text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 ${
-              authTab === 'register' 
-                ? 'bg-brand-navy text-white shadow-sm' 
+              authTab === 'register'
+                ? 'bg-brand-navy text-white shadow-sm'
                 : 'text-brand-gray hover:text-brand-navy'
             }`}
           >
@@ -455,7 +421,6 @@ function ProfileContent() {
         </div>
 
         {authTab === 'login' ? (
-          // LOGIN FORM
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-brand-navy tracking-wider uppercase block">
@@ -465,7 +430,7 @@ function ProfileContent() {
                 <input
                   type="email"
                   required
-                  placeholder="name@domain.com"
+                  placeholder={t('email_placeholder')}
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
                   className="w-full px-4 ltr:pr-11 rtl:pl-11 py-3 border border-brand-border rounded-xl text-xs text-brand-dark focus:outline-none focus:border-brand-navy focus:ring-4 focus:ring-brand-navy/10 bg-brand-sec placeholder-brand-gray transition-all duration-300"
@@ -514,7 +479,6 @@ function ProfileContent() {
             </button>
           </form>
         ) : (
-          // REGISTER FORM
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
@@ -524,7 +488,7 @@ function ProfileContent() {
                 <input
                   type="text"
                   required
-                  placeholder="John"
+                  placeholder={t('firstname_placeholder')}
                   value={registerFirstName}
                   onChange={(e) => setRegisterFirstName(e.target.value)}
                   className="w-full px-4 py-3 border border-brand-border rounded-xl text-xs text-brand-dark focus:outline-none focus:border-brand-navy focus:ring-4 focus:ring-brand-navy/10 bg-brand-sec placeholder-brand-gray transition-all duration-300"
@@ -537,7 +501,7 @@ function ProfileContent() {
                 <input
                   type="text"
                   required
-                  placeholder="Doe"
+                  placeholder={t('lastname_placeholder')}
                   value={registerLastName}
                   onChange={(e) => setRegisterLastName(e.target.value)}
                   className="w-full px-4 py-3 border border-brand-border rounded-xl text-xs text-brand-dark focus:outline-none focus:border-brand-navy focus:ring-4 focus:ring-brand-navy/10 bg-brand-sec placeholder-brand-gray transition-all duration-300"
@@ -553,7 +517,7 @@ function ProfileContent() {
                 <input
                   type="email"
                   required
-                  placeholder="name@domain.com"
+                  placeholder={t('email_placeholder')}
                   value={registerEmail}
                   onChange={(e) => setRegisterEmail(e.target.value)}
                   className="w-full px-4 ltr:pr-11 rtl:pl-11 py-3 border border-brand-border rounded-xl text-xs text-brand-dark focus:outline-none focus:border-brand-navy focus:ring-4 focus:ring-brand-navy/10 bg-brand-sec placeholder-brand-gray transition-all duration-300"
@@ -571,7 +535,7 @@ function ProfileContent() {
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  placeholder="••••••••"
+                  placeholder={t('password_placeholder')}
                   value={registerPassword}
                   onChange={(e) => setRegisterPassword(e.target.value)}
                   className="w-full px-4 ltr:pr-11 rtl:pl-11 py-3 border border-brand-border rounded-xl text-xs text-brand-dark focus:outline-none focus:border-brand-navy focus:ring-4 focus:ring-brand-navy/10 bg-brand-sec placeholder-brand-gray transition-all duration-300"
@@ -603,7 +567,6 @@ function ProfileContent() {
             </button>
           </form>
         )}
-
       </div>
     </div>
   );
@@ -611,11 +574,13 @@ function ProfileContent() {
 
 export default function ProfilePage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-[60vh] flex items-center justify-center bg-white text-brand-dark">
-        <Loader2 className="w-8 h-8 animate-spin text-brand-navy" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-[60vh] flex items-center justify-center bg-white text-brand-dark">
+          <Loader2 className="w-8 h-8 animate-spin text-brand-navy" />
+        </div>
+      }
+    >
       <ProfileContent />
     </Suspense>
   );
