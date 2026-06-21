@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useI18n } from '@/lib/i18n';
-import { ArrowLeft, ArrowRight, Shirt, UtensilsCrossed, Store, Clock } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Shirt, UtensilsCrossed, Clock } from 'lucide-react';
 import WebsiteRequestForm from '@/components/WebsiteRequestForm';
 
 const HERO_CARDS = [
@@ -24,7 +24,7 @@ const DEMOS = [
     href: '/demo/fashion',
     live: true,
     icon: Shirt,
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80',
     titleKey: 'svc_demo_fashion_title',
     descKey: 'svc_demo_fashion_desc',
     tagKey: 'svc_demo_live',
@@ -34,19 +34,9 @@ const DEMOS = [
     href: null,
     live: false,
     icon: UtensilsCrossed,
-    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80',
     titleKey: 'svc_demo_restaurant_title',
     descKey: 'svc_demo_restaurant_desc',
-    tagKey: 'svc_demo_soon',
-  },
-  {
-    id: 'retail',
-    href: null,
-    live: false,
-    icon: Store,
-    image: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?auto=format&fit=crop&w=800&q=80',
-    titleKey: 'svc_demo_retail_title',
-    descKey: 'svc_demo_retail_desc',
     tagKey: 'svc_demo_soon',
   },
 ];
@@ -124,7 +114,7 @@ export default function ServiceLandingPage() {
           <p className="text-sm text-brand-gray max-w-xl">{t('svc_demos_subtitle')}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
           {DEMOS.map((demo) => {
             const Icon = demo.icon;
             const card = (
