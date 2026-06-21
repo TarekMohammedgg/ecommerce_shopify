@@ -9,12 +9,12 @@ const HERO_CARDS = [
   {
     src: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=500&q=80',
     alt: 'Laptop with website design workspace',
-    className: 'transform -rotate-6 -translate-x-8 z-10 shadow-md',
+    className: 'transform -rotate-6 -translate-x-3 sm:-translate-x-6 md:-translate-x-8 z-10 shadow-md',
   },
   {
     src: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=500&q=80',
     alt: 'Customer paying with mobile phone at checkout',
-    className: 'transform rotate-6 translate-x-8 z-20 shadow-lg',
+    className: 'transform rotate-6 translate-x-3 sm:translate-x-6 md:translate-x-8 z-20 shadow-lg',
   },
 ];
 
@@ -52,10 +52,10 @@ export default function ServiceLandingPage() {
   const Arrow = locale === 'ar' ? ArrowLeft : ArrowRight;
 
   return (
-    <div className="w-full flex flex-col bg-white pb-16">
+    <div className="w-full min-w-0 flex flex-col bg-white pb-16 overflow-x-clip">
       {/* Hero */}
-      <section className="max-w-7xl mx-auto px-6 w-full pt-10 pb-6 animate-slide-up">
-        <div className="w-full bg-brand-sec rounded-2xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 md:p-12 relative overflow-hidden">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 w-full min-w-0 pt-10 pb-6 animate-slide-up">
+        <div className="w-full min-w-0 bg-brand-sec rounded-2xl grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-center p-6 sm:p-8 md:p-12 relative overflow-hidden">
           <div className="absolute start-0 top-0 w-1/2 h-full opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-red via-transparent to-transparent pointer-events-none" />
 
           <div className="lg:col-span-7 space-y-6 relative z-10">
@@ -85,11 +85,11 @@ export default function ServiceLandingPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-5 relative h-[260px] md:h-[340px] w-full flex items-center justify-center z-10">
+          <div className="lg:col-span-5 relative h-[220px] sm:h-[260px] md:h-[340px] w-full min-w-0 flex items-center justify-center z-10 overflow-hidden">
             {HERO_CARDS.map((card) => (
               <div
                 key={card.src}
-                className={`absolute w-[180px] h-[240px] bg-white border border-brand-border rounded-xl overflow-hidden ${card.className}`}
+                className={`absolute w-[140px] h-[190px] sm:w-[180px] sm:h-[240px] bg-white border border-brand-border rounded-xl overflow-hidden ${card.className}`}
               >
                 <img
                   src={card.src}
@@ -103,7 +103,7 @@ export default function ServiceLandingPage() {
       </section>
 
       {/* Demos */}
-      <section id="demos" className="max-w-7xl mx-auto px-6 w-full py-12 space-y-8 animate-slide-up">
+      <section id="demos" className="max-w-7xl mx-auto px-4 sm:px-6 w-full min-w-0 py-12 space-y-8 animate-slide-up">
         <div className="space-y-2">
           <span className="text-xs font-bold text-brand-red tracking-widest uppercase block">
             {t('svc_demos_kicker')}
@@ -173,8 +173,8 @@ export default function ServiceLandingPage() {
       </section>
 
       {/* How it works */}
-      <section id="how" className="max-w-7xl mx-auto px-6 w-full py-12 animate-slide-up">
-        <div className="w-full bg-brand-navy text-white rounded-2xl p-8 md:p-12 space-y-10">
+      <section id="how" className="max-w-7xl mx-auto px-4 sm:px-6 w-full min-w-0 py-12 animate-slide-up">
+        <div className="w-full min-w-0 bg-brand-navy text-white rounded-2xl p-6 sm:p-8 md:p-12 space-y-10">
           <div className="text-center space-y-2">
             <span className="text-xs font-bold text-brand-red tracking-widest uppercase block">
               {t('svc_how_kicker')}
@@ -197,7 +197,7 @@ export default function ServiceLandingPage() {
       </section>
 
       {/* Request form */}
-      <section id="request" className="max-w-7xl mx-auto px-6 w-full py-12 animate-slide-up">
+      <section id="request" className="max-w-7xl mx-auto px-4 sm:px-6 w-full min-w-0 py-12 animate-slide-up">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <div className="space-y-4 lg:sticky lg:top-28">
             <span className="text-xs font-bold text-brand-red tracking-widest uppercase block">

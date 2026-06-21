@@ -5,7 +5,7 @@ export default function ServiceLayout({ children }) {
   return (
     <>
       <ServiceHeader />
-      <main className="flex-1 w-full flex flex-col">{children}</main>
+      <main className="flex-1 w-full min-w-0 flex flex-col overflow-x-clip">{children}</main>
       <ServiceFooter />
     </>
   );

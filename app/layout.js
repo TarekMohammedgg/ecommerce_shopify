@@ -10,7 +10,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl" className="h-full scroll-smooth" data-scroll-behavior="smooth" suppressHydrationWarning>
-      <body className="bg-white text-brand-dark min-h-full flex flex-col antialiased overflow-x-hidden relative" suppressHydrationWarning>
+      <body className="bg-white text-brand-dark min-h-full min-w-0 flex flex-col antialiased overflow-x-clip relative" suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>
