@@ -2,7 +2,7 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 
 export const metadata = {
-  title: "استوديو نسيج | Naseej Studio — مواقع للمحلات والمطاعم",
+  title: "تاجر | Tajer — مواقع للمحلات والمطاعم",
   description:
     "نصمم مواقع تجارة إلكترونية احترافية لمحلات الملابس والمطاعم والأنشطة التجارية. شاهد الديمو واطلب موقعك.",
 };

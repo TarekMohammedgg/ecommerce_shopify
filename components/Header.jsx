@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useI18n } from '@/lib/i18n';
 import { useCart } from '@/lib/cart';
 import { useAuth } from '@/lib/auth';
-import { ShoppingBag, Globe, Search, User } from 'lucide-react';
+import { ShoppingBag, Globe, Search, User, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import BrandMark from '@/components/BrandMark';
 
@@ -40,9 +40,21 @@ export default function Header() {
     }
   };
 
+  const BackArrow = locale === 'ar' ? ArrowRight : ArrowLeft;
+
   return (
     <header className="sticky top-0 z-40 w-full bg-white text-brand-dark border-b border-brand-border backdrop-blur-md bg-opacity-95 shadow-sm">
-      
+      <div className="border-b border-brand-border bg-brand-sec">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand-gray hover:text-brand-red uppercase tracking-wider transition-colors"
+          >
+            <BackArrow className="w-3.5 h-3.5" aria-hidden="true" />
+            {t('back_to_service')}
+          </Link>
+        </div>
+      </div>
 
       {/* Main Header Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3 sm:gap-6">

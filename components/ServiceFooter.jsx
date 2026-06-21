@@ -19,7 +19,7 @@ export default function ServiceFooter() {
 
         <div className="text-xs text-brand-gray space-y-1">
           <p>{t('svc_footer_contact')}: {STUDIO.contactEmail}</p>
-          <p>{t('copyright')}</p>
+          <p>{t('svc_copyright')}</p>
         </div>
       </div>
     </footer>
