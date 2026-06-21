@@ -5,6 +5,19 @@ import { useI18n } from '@/lib/i18n';
 import { ArrowLeft, ArrowRight, Shirt, UtensilsCrossed, Store, Clock } from 'lucide-react';
 import WebsiteRequestForm from '@/components/WebsiteRequestForm';
 
+const HERO_CARDS = [
+  {
+    src: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=500&q=80',
+    alt: 'Laptop with website design workspace',
+    className: 'transform -rotate-6 -translate-x-8 z-10 shadow-md',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=500&q=80',
+    alt: 'Customer paying with mobile phone at checkout',
+    className: 'transform rotate-6 translate-x-8 z-20 shadow-lg',
+  },
+];
+
 const DEMOS = [
   {
     id: 'fashion',
@@ -83,20 +96,18 @@ export default function ServiceLandingPage() {
           </div>
 
           <div className="lg:col-span-5 relative h-[260px] md:h-[340px] w-full flex items-center justify-center z-10">
-            <div className="absolute w-[180px] h-[240px] bg-white border border-brand-border rounded-xl shadow-md transform -rotate-6 -translate-x-8 z-10 overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=500&q=80"
-                alt=""
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="absolute w-[180px] h-[240px] bg-white border border-brand-border rounded-xl shadow-lg transform rotate-6 translate-x-8 z-20 overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=500&q=80"
-                alt=""
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {HERO_CARDS.map((card) => (
+              <div
+                key={card.src}
+                className={`absolute w-[180px] h-[240px] bg-white border border-brand-border rounded-xl overflow-hidden ${card.className}`}
+              >
+                <img
+                  src={card.src}
+                  alt={card.alt}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
