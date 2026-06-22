@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useI18n } from '@/lib/i18n';
-import { CheckCircle2, Loader2 } from 'lucide-react';
+import { CheckCircle2, ChevronDown, Loader2 } from 'lucide-react';
 
 const BUSINESS_TYPES = [
   { value: 'fashion', labelKey: 'svc_type_fashion' },
@@ -97,18 +97,24 @@ export default function WebsiteRequestForm() {
           <label htmlFor="businessType" className="text-xs font-semibold text-brand-dark uppercase tracking-wider">
             {t('svc_field_type')}
           </label>
-          <select
-            id="businessType"
-            value={form.businessType}
-            onChange={update('businessType')}
-            className="w-full rounded-lg border border-brand-border bg-white px-4 py-3 text-sm text-brand-dark focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition-all"
-          >
-            {BUSINESS_TYPES.map(({ value, labelKey }) => (
-              <option key={value} value={value}>
-                {t(labelKey)}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              id="businessType"
+              value={form.businessType}
+              onChange={update('businessType')}
+              className="w-full appearance-none rounded-lg border border-brand-border bg-white px-4 pe-10 py-3 text-sm text-brand-dark focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition-all cursor-pointer"
+            >
+              {BUSINESS_TYPES.map(({ value, labelKey }) => (
+                <option key={value} value={value}>
+                  {t(labelKey)}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              className="absolute end-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-gray pointer-events-none"
+              aria-hidden="true"
+            />
+          </div>
         </div>
 
         <div className="space-y-1.5">
@@ -133,10 +139,11 @@ export default function WebsiteRequestForm() {
             id="email"
             type="email"
             required
+            dir="ltr"
             value={form.email}
             onChange={update('email')}
             placeholder={t('email_placeholder')}
-            className="w-full rounded-lg border border-brand-border bg-white px-4 py-3 text-sm text-brand-dark placeholder-brand-gray focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition-all"
+            className="w-full rounded-lg border border-brand-border bg-white px-4 py-3 text-sm text-brand-dark placeholder-brand-gray focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition-all text-left"
           />
         </div>
 
@@ -147,10 +154,11 @@ export default function WebsiteRequestForm() {
           <input
             id="phone"
             type="tel"
+            dir="ltr"
             value={form.phone}
             onChange={update('phone')}
             placeholder="+20 ..."
-            className="w-full rounded-lg border border-brand-border bg-white px-4 py-3 text-sm text-brand-dark placeholder-brand-gray focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition-all"
+            className="w-full rounded-lg border border-brand-border bg-white px-4 py-3 text-sm text-brand-dark placeholder-brand-gray focus:outline-none focus:border-brand-navy focus:ring-1 focus:ring-brand-navy transition-all text-left"
           />
         </div>
 
