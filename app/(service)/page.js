@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useI18n } from '@/lib/i18n';
-import { ArrowLeft, ArrowRight, Shirt, UtensilsCrossed, Clock } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Shirt, Clock } from 'lucide-react';
 import WebsiteRequestForm from '@/components/WebsiteRequestForm';
 
 const HERO_CARDS = [
@@ -28,16 +28,6 @@ const DEMOS = [
     titleKey: 'svc_demo_fashion_title',
     descKey: 'svc_demo_fashion_desc',
     tagKey: 'svc_demo_live',
-  },
-  {
-    id: 'restaurant',
-    href: null,
-    live: false,
-    icon: UtensilsCrossed,
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80',
-    titleKey: 'svc_demo_restaurant_title',
-    descKey: 'svc_demo_restaurant_desc',
-    tagKey: 'svc_demo_soon',
   },
 ];
 
