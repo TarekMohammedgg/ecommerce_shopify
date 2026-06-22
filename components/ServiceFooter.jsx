@@ -11,7 +11,10 @@ export default function ServiceFooter() {
     <footer className="w-full bg-brand-navy text-white pt-12 pb-10 mt-8 border-t border-brand-border">
       <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div className="space-y-2">
-          <span className="font-urbanist font-extrabold text-xl tracking-wider block">{name}</span>
+          <span className="font-urbanist font-extrabold text-xl tracking-wider flex items-center gap-2.5">
+            <img src="/brand/target_logo.svg" alt="Tajer Logo" className="w-8 h-8 object-contain" />
+            <span>{name}</span>
+          </span>
           <p className="text-xs text-brand-gray max-w-sm leading-relaxed">
             {locale === 'ar' ? STUDIO.taglineAr : STUDIO.taglineEn}
           </p>

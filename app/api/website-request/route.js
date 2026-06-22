@@ -4,7 +4,7 @@ import path from 'path';
 const DATA_DIR = path.join(process.cwd(), 'data');
 const REQUESTS_FILE = path.join(DATA_DIR, 'website-requests.json');
 
-const VALID_TYPES = ['fashion', 'restaurant', 'retail', 'other'];
+const VALID_TYPES = ['fashion', 'restaurant', 'other'];
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);

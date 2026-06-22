@@ -7,7 +7,6 @@ import { CheckCircle2, Loader2 } from 'lucide-react';
 const BUSINESS_TYPES = [
   { value: 'fashion', labelKey: 'svc_type_fashion' },
   { value: 'restaurant', labelKey: 'svc_type_restaurant' },
-  { value: 'retail', labelKey: 'svc_type_retail' },
   { value: 'other', labelKey: 'svc_type_other' },
 ];
 

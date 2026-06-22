@@ -34,7 +34,8 @@ export default function ServiceHeader() {
     <>
       <header className="sticky top-0 z-40 w-full min-w-0 bg-white text-brand-dark border-b border-brand-border backdrop-blur-md bg-opacity-95 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center gap-3 min-w-0">
-          <Link href="/" className="min-w-0 flex-shrink">
+          <Link href="/" className="min-w-0 flex-shrink flex items-center gap-2.5">
+            <img src="/brand/target_logo.svg" alt="Tajer Logo" className="w-8 h-8 object-contain" />
             <span className="block font-urbanist tracking-[0.1em] font-extrabold text-xl sm:text-2xl text-brand-navy select-none truncate">
               {name}
             </span>

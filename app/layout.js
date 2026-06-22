@@ -5,6 +5,17 @@ export const metadata = {
   title: "تاجر | Tajer — مواقع للمحلات والمطاعم",
   description:
     "نصمم مواقع تجارة إلكترونية احترافية لمحلات الملابس والمطاعم والأنشطة التجارية. شاهد الديمو واطلب موقعك.",
+  icons: {
+    icon: [
+      { url: "/brand/tajer-mark-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/brand/tajer-mark-64.png", sizes: "64x64", type: "image/png" },
+      { url: "/brand/tajer-icon.png", sizes: "308x308", type: "image/png" },
+      { url: "/brand/target_logo.svg", type: "image/svg+xml" }
+    ],
+    apple: [
+      { url: "/brand/tajer-mark-128.png", sizes: "128x128", type: "image/png" }
+    ]
+  }
 };
 
 export default function RootLayout({ children }) {
