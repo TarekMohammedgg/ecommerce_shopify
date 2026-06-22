@@ -1,30 +1,9 @@
-import { promises as fs } from 'fs';
-import path from 'path';
+import { supabaseServer } from '@/lib/supabase-server';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const REQUESTS_FILE = path.join(DATA_DIR, 'website-requests.json');
-
-const VALID_TYPES = ['fashion', 'restaurant', 'other'];
+const VALID_TYPES = ['clothes&fashion', 'restaurant', 'other'];
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-async function appendRequest(entry) {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-
-  let existing = [];
-  try {
-    const raw = await fs.readFile(REQUESTS_FILE, 'utf-8');
-    existing = JSON.parse(raw);
-  } catch {
-    existing = [];
-  }
-
-  if (!Array.isArray(existing)) existing = [];
-
-  existing.push(entry);
-  await fs.writeFile(REQUESTS_FILE, JSON.stringify(existing, null, 2), 'utf-8');
 }
 
 export async function POST(request) {
@@ -49,20 +28,25 @@ export async function POST(request) {
       return Response.json({ error: 'Invalid business type' }, { status: 400 });
     }
 
-    const entry = {
-      id: crypto.randomUUID(),
-      businessName,
-      businessType,
-      contactName,
-      email,
-      phone: phone || null,
-      message: message || null,
-      createdAt: new Date().toISOString(),
-    };
+    const { data, error } = await supabaseServer
+      .from('website_requests')
+      .insert({
+        business_name: businessName,
+        business_type: businessType,
+        contact_name: contactName,
+        email,
+        phone: phone || null,
+        message: message || null,
+      })
+      .select('id')
+      .single();
 
-    await appendRequest(entry);
+    if (error) {
+      console.error('website-request supabase error:', error);
+      return Response.json({ error: 'Failed to save request' }, { status: 500 });
+    }
 
-    return Response.json({ ok: true, id: entry.id });
+    return Response.json({ ok: true, id: data.id });
   } catch (err) {
     console.error('website-request error:', err);
     return Response.json({ error: 'Failed to save request' }, { status: 500 });

@@ -24,6 +24,7 @@ export default function WebsiteRequestForm() {
   const [form, setForm] = useState(INITIAL);
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
+  const [submittedEmail, setSubmittedEmail] = useState('');
 
   const update = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -48,6 +49,7 @@ export default function WebsiteRequestForm() {
       }
 
       setStatus('success');
+      setSubmittedEmail(form.email);
       setForm(INITIAL);
     } catch (err) {
       setStatus('error');
@@ -58,12 +60,14 @@ export default function WebsiteRequestForm() {
   if (status === 'success') {
     return (
       <div className="rounded-2xl border border-brand-border bg-brand-sec p-10 text-center space-y-4 animate-slide-up">
-        <CheckCircle2 className="w-12 h-12 text-brand-red mx-auto" aria-hidden="true" />
+        <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto" aria-hidden="true" />
         <h3 className="font-urbanist font-extrabold text-xl text-brand-navy">{t('svc_form_success_title')}</h3>
-        <p className="text-sm text-brand-gray max-w-md mx-auto">{t('svc_form_success_body')}</p>
+        <p className="text-sm text-brand-gray max-w-md mx-auto">
+          {t('svc_form_success_body').replace('{email}', submittedEmail)}
+        </p>
         <button
           type="button"
-          onClick={() => setStatus('idle')}
+          onClick={() => { setStatus('idle'); setSubmittedEmail(''); }}
           className="text-xs font-bold text-brand-navy hover:text-brand-red uppercase tracking-widest transition-colors"
         >
           {t('svc_form_another')}
